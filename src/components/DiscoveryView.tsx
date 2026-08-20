@@ -382,7 +382,7 @@ function SwipeCard({
         </div>
       </div>
 
-      <div className="h-[54%] overflow-y-auto p-5">
+      <div className="min-h-0 flex-1 overflow-y-auto p-5">
         <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500">
           <span className="inline-flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5" /> {c.location}
