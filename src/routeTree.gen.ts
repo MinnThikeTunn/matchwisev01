@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
+import { Route as ChatsRouteImport } from './routes/chats'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as IntroductionsRouteImport } from './routes/introductions'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -26,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatsRoute = ChatsRouteImport.update({
+  id: '/chats',
+  path: '/chats',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscoverRoute = DiscoverRouteImport.update({
@@ -62,6 +68,7 @@ const IntroductionIdRoute = IntroductionIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/chats': typeof ChatsRoute
   '/discover': typeof DiscoverRoute
   '/introductions': typeof IntroductionsRoute
   '/onboarding': typeof OnboardingRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/chats': typeof ChatsRoute
   '/discover': typeof DiscoverRoute
   '/introductions': typeof IntroductionsRoute
   '/onboarding': typeof OnboardingRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/chats': typeof ChatsRoute
   '/discover': typeof DiscoverRoute
   '/introductions': typeof IntroductionsRoute
   '/onboarding': typeof OnboardingRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
+    | '/chats'
     | '/discover'
     | '/introductions'
     | '/onboarding'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/app'
+    | '/chats'
     | '/discover'
     | '/introductions'
     | '/onboarding'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/app'
+    | '/chats'
     | '/discover'
     | '/introductions'
     | '/onboarding'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRoute
+  ChatsRoute: typeof ChatsRoute
   DiscoverRoute: typeof DiscoverRoute
   IntroductionsRoute: typeof IntroductionsRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/app'
       fullPath: '/app'
       preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chats': {
+      id: '/chats'
+      path: '/chats'
+      fullPath: '/chats'
+      preLoaderRoute: typeof ChatsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/discover': {
@@ -198,6 +218,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRoute,
+  ChatsRoute: ChatsRoute,
   DiscoverRoute: DiscoverRoute,
   IntroductionsRoute: IntroductionsRoute,
   OnboardingRoute: OnboardingRoute,
