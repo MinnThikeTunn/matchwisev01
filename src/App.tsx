@@ -118,10 +118,21 @@ export default function App() {
       if (cancelled || publicProfiles.length === 0) return;
       setCandidatePool(prev => {
         const mine = cloud.profile?.id;
-        const fresh = publicProfiles.filter(p => p.id !== mine && p.name);
-        const seen = new Set(fresh.map(p => p.id));
-        return [...fresh, ...prev.filter(p => !seen.has(p.id))];
+        const key = (p: UserProfile) => `${p.name ?? ''}|${p.title ?? ''}`.trim().toLowerCase();
+        // Never show the signed-in person, and never show two profiles of the same person
+        // (cloud copies of a demo profile share a name/title with the local seed data).
+        const seenIds = new Set<string>([mine, currentUser.id].filter(Boolean) as string[]);
+        const seenPeople = new Set<string>([key(currentUser)]);
+        const merged: UserProfile[] = [];
+        for (const p of [...publicProfiles.filter(p => p.name), ...prev]) {
+          if (seenIds.has(p.id) || seenPeople.has(key(p))) continue;
+          seenIds.add(p.id);
+          seenPeople.add(key(p));
+          merged.push(p);
+        }
+        return merged;
       });
+
     })();
 
     return () => {
