@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { ClientOnly } from '@tanstack/react-router';
 import App from '../App';
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/app')({
   head: () => ({
     meta: [
       { title: 'Matchwise Prism — Context-Aware Human Matching' },
