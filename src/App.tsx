@@ -124,8 +124,11 @@ export default function App() {
     setIsFirstTimer(false);
   };
 
+  const [synergyOrigin, setSynergyOrigin] = useState<ViewMode>('dashboard');
+
   const handleSelectCandidate = (candidate: UserProfile) => {
     setSelectedCandidate(candidate);
+    setSynergyOrigin(currentView === 'synergy' ? synergyOrigin : currentView);
     setCurrentView('synergy');
   };
 
@@ -231,7 +234,7 @@ export default function App() {
               setActiveThreadId(id);
               setCurrentView('chats');
             }}
-            onBack={() => setCurrentView('introductions')}
+            onBack={() => setCurrentView(synergyOrigin)}
           />
         )}
       </main>
