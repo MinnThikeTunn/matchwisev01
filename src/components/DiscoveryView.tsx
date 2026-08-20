@@ -335,7 +335,7 @@ function SwipeCard({
 
   return (
     <motion.article
-      className="absolute inset-0 z-10 rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-lg cursor-grab active:cursor-grabbing"
+      className="absolute inset-0 z-10 flex flex-col rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-lg cursor-grab active:cursor-grabbing"
       style={{ x, rotate }}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
