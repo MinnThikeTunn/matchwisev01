@@ -124,7 +124,7 @@ export function MatchwiseProvider({ children }: { children: ReactNode }) {
       hydrated,
       startDemo: () => patch((s) => ({ ...s, demoMode: true, step: "profile" })),
       restartDemo: () => setState({ ...initialState, demoMode: true, step: "profile" }),
-      setStep: (step) => patch((s) => ({ ...s, step })),
+      setStep: (step) => patch((s) => (s.step === step ? s : { ...s, step })),
       sendSignal: (profileId, direction) =>
         patch((s) => ({ ...s, signals: { ...s.signals, [profileId]: direction } })),
       undoSignal: (profileId) =>
