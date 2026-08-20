@@ -142,7 +142,7 @@ export function DiscoveryView({
       <div className="grid lg:grid-cols-[minmax(0,1fr)_320px] gap-8 items-start">
         {/* Card stack */}
         <div>
-          <div className="relative h-[560px] sm:h-[600px]">
+          <div className="relative mx-auto w-full max-w-[420px] h-[560px] sm:h-[620px]">
             {upcoming
               .slice()
               .reverse()
