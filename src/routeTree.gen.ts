@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ApiExplainMatchRouteImport } from './routes/api/explain-match'
 import { Route as ApiParseCustomMatchRouteImport } from './routes/api/parse-custom-match'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiExplainMatchRoute = ApiExplainMatchRouteImport.update({
@@ -38,12 +44,14 @@ const ApiParseCustomMatchRoute = ApiParseCustomMatchRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/onboarding': typeof OnboardingRoute
   '/api/explain-match': typeof ApiExplainMatchRoute
   '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/onboarding': typeof OnboardingRoute
   '/api/explain-match': typeof ApiExplainMatchRoute
   '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
 }
@@ -51,21 +59,38 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/onboarding': typeof OnboardingRoute
   '/api/explain-match': typeof ApiExplainMatchRoute
   '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/api/explain-match' | '/api/parse-custom-match'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/onboarding'
+    | '/api/explain-match'
+    | '/api/parse-custom-match'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app' | '/api/explain-match' | '/api/parse-custom-match'
+  to:
+    | '/'
+    | '/app'
+    | '/onboarding'
+    | '/api/explain-match'
+    | '/api/parse-custom-match'
   id:
-    '__root__' | '/' | '/app' | '/api/explain-match' | '/api/parse-custom-match'
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/onboarding'
+    | '/api/explain-match'
+    | '/api/parse-custom-match'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRoute
+  OnboardingRoute: typeof OnboardingRoute
   ApiExplainMatchRoute: typeof ApiExplainMatchRoute
   ApiParseCustomMatchRoute: typeof ApiParseCustomMatchRoute
 }
@@ -84,6 +109,13 @@ declare module '@tanstack/react-router' {
       path: '/app'
       fullPath: '/app'
       preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/explain-match': {
@@ -106,6 +138,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRoute,
+  OnboardingRoute: OnboardingRoute,
   ApiExplainMatchRoute: ApiExplainMatchRoute,
   ApiParseCustomMatchRoute: ApiParseCustomMatchRoute,
 }
