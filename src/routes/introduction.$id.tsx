@@ -65,7 +65,7 @@ function IntroductionDetail() {
   const other = rec.profile;
 
   return (
-    <AppShell>
+    <AppShell showNav={false}>
       <SectionCard className="overflow-hidden p-0">
         <img
           src={other.photo}
