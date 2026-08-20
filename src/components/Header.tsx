@@ -19,7 +19,9 @@ import {
   Users,
   ExternalLink,
   Layers,
-  Database
+  Database,
+  Handshake,
+  MessagesSquare
 } from 'lucide-react';
 import { getColorIdentity } from '../lib/colorSystem';
 
@@ -101,13 +103,13 @@ export const Header: React.FC<HeaderProps> = ({
     {
       id: 'introductions' as ViewMode,
       label: 'Introductions',
-      icon: Sparkles,
+      icon: Handshake,
       description: 'A small shortlist with readable reasons, decided by both people'
     },
     {
       id: 'chats' as ViewMode,
       label: 'Conversations',
-      icon: Sparkles,
+      icon: MessagesSquare,
       description: 'Opens only after two deliberate yeses'
     },
     {
