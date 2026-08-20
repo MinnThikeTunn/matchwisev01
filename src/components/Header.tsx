@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ViewMode, UserProfile } from '../types';
 import { 
-  Search, 
   Sparkles, 
   Bell, 
   Palette, 
