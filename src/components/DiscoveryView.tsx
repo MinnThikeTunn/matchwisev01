@@ -362,8 +362,13 @@ function SwipeCard({
         PASS
       </motion.div>
 
-      <div className="relative h-[46%]">
-        <img src={c.avatar} alt={c.name} className="w-full h-full object-cover" draggable={false} />
+      <div className="relative aspect-[4/5] max-h-[58%] w-full bg-stone-100">
+        <img
+          src={c.avatar}
+          alt={c.name}
+          className="w-full h-full object-cover object-top"
+          draggable={false}
+        />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5">
           <div className="flex items-center gap-2">
             <h3 className="text-xl font-semibold text-white">{c.name}</h3>
