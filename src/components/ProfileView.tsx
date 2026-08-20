@@ -39,7 +39,7 @@ interface ProfileViewProps {
   candidatePool: UserProfile[];
   onUpdateProfile: (updated: UserProfile) => void;
   onSelectCandidateSynergy?: (candidate: UserProfile) => void;
-  onNavigateToColors?: () => void;
+  onNavigateToPreferences?: () => void;
   onOpenChromaticTest?: () => void;
 }
 
@@ -48,7 +48,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   candidatePool,
   onUpdateProfile,
   onSelectCandidateSynergy,
-  onNavigateToColors,
+  onNavigateToPreferences,
   onOpenChromaticTest,
 }) => {
   // Selected profile to inspect (defaults to currentUser, can inspect candidates)
@@ -690,9 +690,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               </button>
             )}
 
-            {onNavigateToColors && (
+            {onNavigateToPreferences && (
               <button
-                onClick={onNavigateToColors}
+                onClick={onNavigateToPreferences}
                 className="p-4 rounded-2xl bg-amber-50/70 hover:bg-amber-100/70 border border-amber-200 text-amber-950 flex-1 flex items-center justify-between text-xs font-bold transition-all"
                 id="profile-spectrum-learn-more-btn"
               >
