@@ -39,7 +39,7 @@ interface ProfileViewProps {
   candidatePool: UserProfile[];
   onUpdateProfile: (updated: UserProfile) => void;
   onSelectCandidateSynergy?: (candidate: UserProfile) => void;
-  onNavigateToColors?: () => void;
+  onNavigateToPreferences?: () => void;
   onOpenChromaticTest?: () => void;
 }
 
@@ -48,7 +48,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   candidatePool,
   onUpdateProfile,
   onSelectCandidateSynergy,
-  onNavigateToColors,
+  onNavigateToPreferences,
   onOpenChromaticTest,
 }) => {
   // Selected profile to inspect (defaults to currentUser, can inspect candidates)
@@ -214,7 +214,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       {showCopyToast && (
         <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-white px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 text-xs font-semibold animate-in fade-in slide-in-from-bottom-2">
           <Check className="w-4 h-4 text-emerald-400" />
-          <span>Chromatic Dossier link copied to clipboard!</span>
+          <span>Profile link copied to clipboard!</span>
         </div>
       )}
 
@@ -290,7 +290,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   id="profile-edit-toggle-btn"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
-                  <span>Edit Profile & Spectrum</span>
+                  <span>Edit Profile</span>
                 </button>
               )}
             </>
@@ -354,7 +354,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           id="profile-tab-spectrum"
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Prism Spectrum</span>
+          <span>Traits</span>
         </button>
 
         <button
@@ -554,7 +554,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             <div className="bg-white border border-stone-200 rounded-2xl p-6 shadow-xs">
               <h3 className="text-sm font-bold text-stone-900 flex items-center gap-2 pb-3 border-b border-stone-100">
                 <Sparkles className="w-4 h-4 text-[#D97706]" />
-                <span>Chromatic Signature Profile</span>
+                <span>Traits & Preferences</span>
               </h3>
 
               <div className="mt-4 space-y-3">
@@ -619,12 +619,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </div>
       )}
 
-      {/* Tab Content 2: Prism Spectrum Detailed Visualizer */}
+      {/* Tab Content 2: Traits Detailed Visualizer */}
       {activeTab === 'spectrum' && (
         <div className="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs animate-in fade-in duration-200 space-y-8">
           <div>
             <h2 className="text-xl font-bold text-stone-900 tracking-tight">
-              Prism Chromatic Coordinates & Tone Synthesis
+              Trait Breakdown
             </h2>
             <p className="text-xs text-stone-500 mt-1">
               Mathematical representation of your cognitive vectors mapped into perceptual OKLCH color space.
@@ -671,7 +671,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
           </div>
 
-          {/* Actions: Color System Guide & Recalibrate Assessment */}
+          {/* Actions */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             {onOpenChromaticTest && isSelf && (
               <button
@@ -690,16 +690,16 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               </button>
             )}
 
-            {onNavigateToColors && (
+            {onNavigateToPreferences && (
               <button
-                onClick={onNavigateToColors}
+                onClick={onNavigateToPreferences}
                 className="p-4 rounded-2xl bg-amber-50/70 hover:bg-amber-100/70 border border-amber-200 text-amber-950 flex-1 flex items-center justify-between text-xs font-bold transition-all"
                 id="profile-spectrum-learn-more-btn"
               >
                 <div className="flex items-center gap-2.5">
                   <Sparkles className="w-4 h-4 text-[#D97706]" />
                   <div className="text-left">
-                    <span className="block text-amber-950">Explore Color System Science</span>
+                    <span className="block text-amber-950">Open Preferences & Questions</span>
                     <span className="block text-[10px] font-normal text-amber-900/70">Understand the OKLCH mathematical behavioral model</span>
                   </div>
                 </div>

@@ -12,14 +12,13 @@ import { DemoGuide } from './components/DemoGuide';
 import { useStage } from './components/stage/useStage';
 import { reachStep } from './lib/twoStage';
 import { ProfileView } from './components/ProfileView';
-import { ColorSystemView } from './components/ColorSystemView';
+import { PreferencesView } from './components/PreferencesView';
 import { CustomAiMatchModal } from './components/CustomAiMatchModal';
 import { NetworkModal } from './components/NetworkModal';
 import { OnboardingQuestionnaire } from './components/OnboardingQuestionnaire';
-import { ChromaticTestModal } from './components/ChromaticTestModal';
 import { CURRENT_USER, MOCK_PROFILES } from './data/mockData';
+import { DATING_PROFILES } from './data/datingProfiles';
 import { UserProfile, ViewMode } from './types';
-import { ChromaticAssessmentResult } from './lib/colorSystem';
 import { ONBOARDING_COMPLETE_KEY } from './lib/onboardingStorage';
 import {
   saveProfileToCloud,
@@ -45,25 +44,13 @@ export default function App() {
     return CURRENT_USER;
   });
 
-  const [candidatePool, setCandidatePool] = useState<UserProfile[]>(MOCK_PROFILES);
+  const [candidatePool, setCandidatePool] = useState<UserProfile[]>([...MOCK_PROFILES, ...DATING_PROFILES]);
   const [selectedCandidate, setSelectedCandidate] = useState<UserProfile>(
     MOCK_PROFILES.find(p => p.id === 'user-sam-reed') || MOCK_PROFILES[3]
   );
 
   const [highContrast, setHighContrast] = useState(false);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
-
-  // Check if first-timer (test not completed yet in localStorage)
-  const [isFirstTimer, setIsFirstTimer] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem('matchwise_chromatic_test_completed') !== 'true';
-    } catch {
-      return false;
-    }
-  });
-
-  // Open assessment modal automatically if first-timer
-  const [isChromaticTestOpen, setIsChromaticTestOpen] = useState<boolean>(false);
 
   // Modals state
   const [isCustomMatchOpen, setIsCustomMatchOpen] = useState(false);
@@ -141,11 +128,6 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleCompleteChromaticTest = (updatedUser: UserProfile, _result: ChromaticAssessmentResult) => {
-    handleUpdateUser(updatedUser);
-    setIsFirstTimer(false);
-  };
-
   const [synergyOrigin, setSynergyOrigin] = useState<ViewMode>('dashboard');
 
   const handleSelectCandidate = (candidate: UserProfile) => {
@@ -168,7 +150,6 @@ export default function App() {
         onOpenCustomMatch={() => setIsCustomMatchOpen(true)}
         onOpenQuestionnaire={() => setIsQuestionnaireOpen(true)}
         onOpenNetwork={() => setIsNetworkOpen(true)}
-        onOpenChromaticTest={() => setIsChromaticTestOpen(true)}
         currentUser={currentUser}
         highContrast={highContrast}
       />
@@ -184,7 +165,7 @@ export default function App() {
             onSelectCandidate={handleSelectCandidate}
             onOpenNetworkModal={() => setIsNetworkOpen(true)}
             onOpenCustomMatch={() => setIsCustomMatchOpen(true)}
-            onNavigateToColors={() => setCurrentView('colors')}
+            onNavigateToPreferences={() => setCurrentView('preferences')}
             onNavigateToMaps={(_tier) => {
               setCurrentView('maps');
             }}
@@ -236,15 +217,12 @@ export default function App() {
             candidatePool={candidatePool}
             onUpdateProfile={handleUpdateUser}
             onSelectCandidateSynergy={handleSelectCandidate}
-            onNavigateToColors={() => setCurrentView('colors')}
-            onOpenChromaticTest={() => setIsChromaticTestOpen(true)}
-          />
+            onNavigateToPreferences={() => setCurrentView('preferences')}
+              />
         )}
 
-        {currentView === 'colors' && (
-          <ColorSystemView 
-            onOpenChromaticTest={() => setIsChromaticTestOpen(true)} 
-          />
+        {currentView === 'preferences' && (
+          <PreferencesView onOpenDiscovery={() => setCurrentView('discovery')} />
         )}
 
         {currentView === 'synergy' && (
@@ -268,14 +246,6 @@ export default function App() {
       />
 
       {/* Modals */}
-      <ChromaticTestModal
-        isOpen={isChromaticTestOpen}
-        onClose={() => setIsChromaticTestOpen(false)}
-        currentUser={currentUser}
-        onCompleteTest={handleCompleteChromaticTest}
-        isFirstTimer={isFirstTimer}
-      />
-
       <CustomAiMatchModal
         isOpen={isCustomMatchOpen}
         onClose={() => setIsCustomMatchOpen(false)}

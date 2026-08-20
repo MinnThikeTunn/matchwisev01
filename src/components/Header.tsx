@@ -3,7 +3,7 @@ import { ViewMode, UserProfile } from '../types';
 import { 
   Sparkles, 
   Bell, 
-  Palette, 
+  SlidersHorizontal, 
   Menu, 
   X, 
   LayoutDashboard, 
@@ -82,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
       id: 'dashboard' as ViewMode,
       label: 'Dashboard',
       icon: LayoutDashboard,
-      description: 'Your chromatic signature & global synergy'
+      description: 'Your profile at a glance'
     },
     {
       id: 'discovery' as ViewMode,
@@ -112,13 +112,13 @@ export const Header: React.FC<HeaderProps> = ({
       id: 'verification' as ViewMode,
       label: 'Verification',
       icon: ShieldCheck,
-      description: 'Zero-leakage proof of chromatic spectrum'
+      description: 'Private, verifiable proof of who you are'
     },
     {
-      id: 'colors' as ViewMode,
-      label: 'Color System',
-      icon: Palette,
-      description: '5 Core channels & harmonic archetype matrix'
+      id: 'preferences' as ViewMode,
+      label: 'Preferences',
+      icon: SlidersHorizontal,
+      description: 'Personality & preference questions that shape your matches'
     },
     {
       id: 'profile' as ViewMode,
@@ -203,7 +203,7 @@ export const Header: React.FC<HeaderProps> = ({
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-white border border-stone-200 rounded-2xl shadow-xl p-4 z-50 animate-in fade-in zoom-in-95">
                   <div className="flex items-center justify-between pb-2.5 border-b border-stone-100">
-                    <span className="text-xs font-bold text-stone-900">Chromatic Feed</span>
+                    <span className="text-xs font-bold text-stone-900">Activity</span>
                     <span className="text-[10px] text-[#D97706] font-bold px-2 py-0.5 bg-amber-50 rounded-full border border-amber-200">
                       2 New
                     </span>
@@ -215,16 +215,16 @@ export const Header: React.FC<HeaderProps> = ({
                         <span>Solar & Cobalt Resonance</span>
                       </p>
                       <p className="text-stone-500 text-[11px] mt-1 leading-snug">
-                        Elias Thorne matches your System Architecture spectrum.
+                        Elias Thorne looks like a strong fit for you.
                       </p>
                     </div>
                     <div className="text-xs p-2.5 bg-stone-50 rounded-xl border border-stone-100">
                       <p className="font-semibold text-stone-800 flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-[#059669]" />
-                        <span>Chromatic Signature Verified</span>
+                        <span>Profile Verified</span>
                       </p>
                       <p className="text-stone-500 text-[11px] mt-1 leading-snug">
-                        Your Conic Ring spectrum has been officially authenticated.
+                        Your profile has been verified.
                       </p>
                     </div>
                   </div>
@@ -353,7 +353,7 @@ export const Header: React.FC<HeaderProps> = ({
               id="mobile-view-profile-btn"
             >
               <User className="w-3.5 h-3.5 text-stone-600" />
-              <span>View Chromatic Dossier</span>
+              <span>View Full Profile</span>
             </button>
           </div>
 

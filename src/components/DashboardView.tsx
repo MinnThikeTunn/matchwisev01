@@ -1,5 +1,6 @@
 import React from 'react';
-import { Zap, Infinity as InfinityIcon, Scale, SlidersHorizontal, Sparkles, Palette, ArrowRight, Brain, Globe, Heart, Briefcase } from 'lucide-react';
+import { Zap, SlidersHorizontal, Sparkles, ArrowRight, Globe, Heart, Briefcase } from 'lucide-react';
+import { preferenceStats, useAnswers } from '../lib/preferences';
 import { UserProfile, EngineTier } from '../types';
 import { getColorIdentity } from '../lib/colorSystem';
 import { ProfileHeroCard } from './ProfileHeroCard';
@@ -10,7 +11,7 @@ interface DashboardViewProps {
   onSelectCandidate: (candidate: UserProfile) => void;
   onOpenNetworkModal: () => void;
   onOpenCustomMatch: () => void;
-  onNavigateToColors?: () => void;
+  onNavigateToPreferences?: () => void;
   onNavigateToMaps?: (tier?: EngineTier) => void;
 }
 
@@ -19,9 +20,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   quickMatches,
   onSelectCandidate,
   onOpenNetworkModal,
-  onNavigateToColors,
+  onNavigateToPreferences,
   onNavigateToMaps
 }) => {
+  const answers = useAnswers();
+  const prefStats = preferenceStats(answers);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 animate-in fade-in duration-300">
@@ -56,32 +59,39 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
 
 
-          {/* Dedicated Color System & Behavioral Science Banner Card */}
+          {/* Preference completion prompt */}
           <div className="bg-white border border-stone-200 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 rounded-xl bg-amber-50 text-[#D97706] flex items-center justify-center shrink-0">
-                <Palette className="w-5 h-5" />
+                <SlidersHorizontal className="w-5 h-5" />
               </div>
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-stone-900 flex items-center gap-2">
-                  <span>Matchwise Chromatic Behavioral Model</span>
+                  <span>Complete your preferences</span>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100/70 text-[#D97706]">
-                    OKLCH Science
+                    {prefStats.completeness}% done
                   </span>
                 </h4>
                 <p className="text-xs text-stone-500 max-w-xl">
-                  Learn how perceptual color frequencies define execution speed, systems thinking, empathy, and visionary intuition across team dynamics.
+                  {prefStats.total - prefStats.answered} questions left on personality, intent, values,
+                  lifestyle and communication. Each one makes your introductions less of a guess.
                 </p>
+                <div className="mt-2 h-1.5 w-full max-w-xs rounded-full bg-stone-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-[#D97706] transition-all"
+                    style={{ width: `${prefStats.completeness}%` }}
+                  />
+                </div>
               </div>
             </div>
 
-            {onNavigateToColors && (
+            {onNavigateToPreferences && (
               <button
-                onClick={onNavigateToColors}
+                onClick={onNavigateToPreferences}
                 className="flex items-center gap-1.5 px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all shrink-0"
-                id="dashboard-explore-color-system-btn"
+                id="dashboard-open-preferences-btn"
               >
-                <span>Explore Color System</span>
+                <span>{prefStats.answered ? 'Continue answering' : 'Start answering'}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
               </button>
             )}
@@ -164,7 +174,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#D97706]" />
                   <h2 className="text-base font-bold text-stone-900">
-                    Resonant Colors
+                    People near your fit
                   </h2>
                 </div>
                 <button
@@ -241,7 +251,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 className="w-full py-2.5 px-4 bg-[#EAECEF] hover:bg-[#DFE2E7] text-stone-800 text-xs font-semibold rounded-xl transition-colors text-center"
                 id="view-complete-network-btn"
               >
-                View Full Chromatic Network
+                View Full Network
               </button>
             </div>
           </div>
