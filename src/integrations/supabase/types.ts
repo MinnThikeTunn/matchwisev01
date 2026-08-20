@@ -14,7 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      anon_profile_features: {
+        Row: {
+          completed: boolean
+          created_at: string
+          features: Json
+          profile_id: string
+          updated_at: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          features?: Json
+          profile_id: string
+          updated_at?: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          features?: Json
+          profile_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anon_profile_features_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "anon_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      anon_profiles: {
+        Row: {
+          avatar: string | null
+          bio: string | null
+          claimed_by: string | null
+          created_at: string
+          id: string
+          is_public: boolean
+          location: string | null
+          name: string
+          public_data: Json
+          title: string | null
+          token_hash: string
+          updated_at: string
+        }
+        Insert: {
+          avatar?: string | null
+          bio?: string | null
+          claimed_by?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          location?: string | null
+          name?: string
+          public_data?: Json
+          title?: string | null
+          token_hash: string
+          updated_at?: string
+        }
+        Update: {
+          avatar?: string | null
+          bio?: string | null
+          claimed_by?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          location?: string | null
+          name?: string
+          public_data?: Json
+          title?: string | null
+          token_hash?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
