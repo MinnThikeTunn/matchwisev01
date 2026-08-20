@@ -1,46 +1,52 @@
-# Matchwise Prism — review and next steps
+# Replace the Color System with a Preferences & Personality tab, and bring Dating into Discovery
 
-## Where the app stands
+## 1. New tab: "Preferences" (replaces "Color System")
 
-The two-stage layer is now genuinely inside the Prism app: Discovery records private signals, Introductions shows banded shortlists, the Synergy view carries the "Why you two" decision panel, and Conversations open only after a mutual yes. Landing page, guided demo strip, safety sheet, undo, and the "this is not a match" toast all exist.
+The Color System tab today is a 800-line explainer about OKLCH perceptual colour theory plus a live colour simulator. It teaches a theory instead of improving anyone's matches. It gets replaced by a tab where the user actually answers things about themselves and sees where they stand.
 
-Against the build plan, these gaps remain.
+The new tab has three parts on one page:
 
-### 1. Broken route (highest priority)
-`/onboarding` returns 404 — that is the page currently open in the preview. Any link or bookmark pointing there dead-ends. Onboarding lives inside the app shell, so `/onboarding` should redirect into the app's onboarding step (or be removed from wherever it is still linked).
+**Your stats (top).** A snapshot strip: profile completeness %, questions answered (e.g. 18/32), signals sent this week, introductions received, mutual matches, average response time, and a "match confidence" meter that visibly rises as more questions are answered. All demo values, computed from local state so they move when the user answers questions.
 
-### 2. Demo data is browser-only
-Signal, decision, and match state live only in `localStorage`. The plan calls for Supabase-backed fictional demo records so a judge on any device sees the same seeded people and so a refresh mid-demo is safe. Seed demo profiles into the existing `anon_profiles` tables and read them at demo start, keeping local state as the fast path.
+**Question sets (middle).** Grouped, tappable cards — answer inline, no modal, progress ring per set:
+- Personality — 8 agree/disagree statements (energy from people, planning vs improvising, conflict style, novelty seeking, steadiness under stress).
+- Relationship intent — what you're looking for, timeline, exclusivity, distance you'd travel.
+- Values — 6 pick-what-matters items (family, faith/spirituality, ambition, politics-tolerance, honesty style, money attitude).
+- Lifestyle — sleep rhythm, social battery, drinking/smoking, fitness, pets, kids.
+- Communication — reply speed, texting vs calling, how you handle disagreement.
+- Interests — multi-select chips (food, travel, music, film, gaming, outdoors, reading, sport).
 
-### 3. Demo robustness for the pitch
-- Restart / reset control reachable from every screen, not just Profile.
-- Skip/back protection so an accidental browser Back does not desync the guided strip.
-- A predictable end state that loops cleanly back to the landing page.
+Each set shows a one-line "why this helps" note and answers save instantly to local state.
 
-### 4. Spec details not yet honoured
-- Photo pagination dots and "tap to open full profile" separated from drag on Discovery cards.
-- Explicit "Waiting for your decision / You accepted / Matched / Closed" status on every Introduction card.
-- The "Nuance" line ("treat this as a conversation point, not a prediction") in the Why-you-two dossier.
-- Report and Block as distinct actions with confirmation, not only a combined safety sheet.
+**What this changed (bottom).** After answering, a short readout: your top three traits in plain words, the two things you weight most in a partner, and a line like "these answers now shape 6 of the 7 factors in your introductions." Plus a "Retake" and a "Reset answers" control.
 
-### 5. Consistency and polish
-Colours are hardcoded hex values across ~19 components (Header alone has 23). This blocks theming and makes the newer two-stage components drift from the Prism palette. Move the Prism palette into CSS tokens in `src/styles.css` and swap components over.
+The existing chromatic assessment modal is repurposed as the quick-start version of the Personality set, restyled to plain language (no colour naming) — or removed if it fights the new inline flow.
 
-Also: `src/components/stage/` still holds leftovers from the earlier parallel build; `useStage.ts` and `SafetySheet.tsx` should move next to the other components and the folder be removed.
+## 2. Removing colour-system language elsewhere
 
-## Suggested order
+Colour is used as decorative identity throughout, which is fine; the pseudo-scientific framing is what goes. Changes:
+- Header: "Color System" nav item becomes "Preferences"; "Chromatic Feed", "Chromatic Signature Verified", "View Chromatic Dossier" become plain wording.
+- Dashboard: the "Matchwise Chromatic Behavioral Model / OKLCH Science" banner is replaced by a "Complete your preferences" prompt that deep-links into the new tab and shows remaining questions. "Resonant Colors" list becomes "People near your fit".
+- Profile: the "Prism Spectrum" tab and "Chromatic Signature Profile" panel become "Traits & Preferences", showing the same bars labelled by behaviour (Drive, Depth, Warmth) rather than colour names.
+- Synergy view: "Chromatic Synergy Resonance", "XAI Chromatic Drivers", "Initiate Chromatic Collaboration" reworded to human phrasing ("Why you two", "What drives this fit", "Send an introduction").
+- Verification: "zero-leakage proof of chromatic spectrum" reworded.
 
-1. Fix `/onboarding` and clear the orphan `stage/` folder.
-2. Demo robustness: global restart, back protection, clean loop-back.
-3. Spec details on Discovery, Introductions, and the dossier.
-4. Supabase-seeded demo records.
-5. Palette tokens and hex cleanup.
+Avatar accent colours and the ring visuals stay — they read as branding, not as a theory.
 
-Steps 1–3 are the ones that most affect how the demo reads to a judge; 4 and 5 are durability work.
+## 3. Dating in Discovery
+
+Discovery currently offers only Collaborate, Study, Community, Teams — the romantic context is missing even though the product leads with dating. Fix:
+- Add a **Dating** context as the first and default tab in Discovery, mapped to the `DATING` intent.
+- The demo data has only one dating profile, so add 5–6 dating-intent demo people with photos, bios, ages, location and interests so the swipe deck has depth.
+- Dating cards show what matters for dating: age, distance, looking-for, two shared interests, and one "worth knowing" line — not skills/domains.
+- Ranking for the dating context weights values, lifestyle, communication and interests instead of the skill-exchange weights used by Collaborate/Teams.
+- Introductions and the "Why you two" dossier show dating-appropriate reason chips when the introduction came from the dating context.
 
 ## Technical notes
 
-- Route fix: add `src/routes/onboarding.tsx` that redirects to `/app` with an onboarding flag, or drop the stale link.
-- Demo state: keep `useSyncExternalStore` in `src/lib/twoStage.ts`; add a hydrate-from-Supabase call at demo start and guard against overwriting an in-progress run.
-- Seeding: literal INSERT statements in a migration for the demo people, with anon SELECT grants and policies.
-- Tokens: define Prism colours as CSS variables in `src/styles.css`, then replace hex literals component by component starting with Header, ProfileView, and the two-stage components.
+- `DiscoveryContext` in `src/lib/discovery.ts` gains `'DATING'` mapped to `subMode: 'DATING'`, placed first in `DISCOVERY_CONTEXTS`; the default `useState` in `DiscoveryView` switches to it.
+- Dating candidates are added to `src/data/mockData.ts` with `subMode: 'DATING'` and `tier: 'PERSONAL'`, plus generated portraits in `src/assets`.
+- Context-aware scoring: extend `rankDiscovery` with a per-context weight table rather than branching inside the pairwise algorithm.
+- New `src/components/PreferencesView.tsx` plus `src/lib/preferences.ts` (question definitions, answer storage in localStorage via the same `useSyncExternalStore` pattern as `twoStage.ts`, derived stats).
+- `ViewMode` `'colors'` becomes `'preferences'`; `ColorSystemView.tsx` is deleted and `App.tsx`/`Header.tsx` rewired.
+- `src/lib/colorSystem.ts` stays for avatar/ring accents; only its narrative surfaces go.
