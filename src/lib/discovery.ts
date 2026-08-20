@@ -1,10 +1,11 @@
 import { UserProfile, IntentSubMode } from '../types';
+import { DATING_META } from '../data/datingProfiles';
 import { evaluatePairwiseMatch } from './algorithm';
 
 export const MATCH_VERSION = 'MATCHWISE_MATCH_V1_0';
 
-/** Non-romantic discovery contexts. */
-export type DiscoveryContext = 'COLLABORATE' | 'STUDY' | 'FRIENDS' | 'TEAMS';
+/** Discovery contexts. Dating is the primary one. */
+export type DiscoveryContext = 'DATING' | 'COLLABORATE' | 'STUDY' | 'FRIENDS' | 'TEAMS';
 
 export const DISCOVERY_CONTEXTS: {
   id: DiscoveryContext;
@@ -12,11 +13,28 @@ export const DISCOVERY_CONTEXTS: {
   subMode: IntentSubMode;
   blurb: string;
 }[] = [
+  { id: 'DATING', label: 'Dating', subMode: 'DATING', blurb: 'Romantic intent, values & lifestyle fit' },
   { id: 'COLLABORATE', label: 'Collaborate', subMode: 'NETWORKING', blurb: 'Skill exchange & co-building' },
   { id: 'STUDY', label: 'Study', subMode: 'STUDY_PARTNERS', blurb: 'Peers, tutors & learners' },
   { id: 'FRIENDS', label: 'Community', subMode: 'FRIENDS', blurb: 'Social rhythm & shared activities' },
   { id: 'TEAMS', label: 'Teams', subMode: 'PROJECT_GROUPS', blurb: 'Role coverage & delivery fit' },
 ];
+
+/**
+ * Per-context weighting. Dating leans on values, lifestyle, communication and
+ * interests; the working contexts lean on complementary skills and delivery.
+ */
+export const CONTEXT_WEIGHTS: Record<
+  DiscoveryContext,
+  { values: number; lifestyle: number; communication: number; interests: number; skills: number }
+> = {
+  DATING: { values: 0.3, lifestyle: 0.22, communication: 0.2, interests: 0.2, skills: 0.08 },
+  COLLABORATE: { values: 0.15, lifestyle: 0.05, communication: 0.15, interests: 0.15, skills: 0.5 },
+  STUDY: { values: 0.15, lifestyle: 0.1, communication: 0.2, interests: 0.15, skills: 0.4 },
+  FRIENDS: { values: 0.2, lifestyle: 0.25, communication: 0.15, interests: 0.3, skills: 0.1 },
+  TEAMS: { values: 0.15, lifestyle: 0.05, communication: 0.15, interests: 0.1, skills: 0.55 },
+};
+
 
 export type SwipeAction = 'like' | 'pass';
 
@@ -107,11 +125,84 @@ export interface RankedCandidate {
   uncertainties: string[];
 }
 
+/** Shared interests / values proxies used by the dating context. */
+export function sharedInterests(a: UserProfile, b: UserProfile): string[] {
+  const mine = new Set(
+    [...a.needsOffers.domains, ...a.needsOffers.offers].map((t) => t.toLowerCase()),
+  );
+  return [...b.needsOffers.domains, ...b.needsOffers.offers].filter((t) =>
+    mine.has(t.toLowerCase()),
+  );
+}
+
+/**
+ * Context-weighted adjustment on top of the deterministic pairwise score.
+ * Dating weights values, lifestyle, communication and interests far above skills.
+ */
+function contextAdjustment(
+  requester: UserProfile,
+  candidate: UserProfile,
+  context: DiscoveryContext,
+): number {
+  const w = CONTEXT_WEIGHTS[context];
+  const close = (x: number, y: number) => 1 - Math.min(1, Math.abs(x - y) / 100);
+
+  const values = close(requester.resonanceScore, candidate.resonanceScore);
+  const lifestyle =
+    0.5 * close(requester.availabilityHoursPerWeek * 4, candidate.availabilityHoursPerWeek * 4) +
+    0.5 * close(requester.ocean.conscientiousness, candidate.ocean.conscientiousness);
+  const communication =
+    0.5 * close(requester.ocean.extraversion, candidate.ocean.extraversion) +
+    0.5 * close(100 - requester.ocean.neuroticism, 100 - candidate.ocean.neuroticism);
+  const interests = Math.min(1, sharedInterests(requester, candidate).length / 3);
+  const skills = close(requester.capabilityScore, candidate.capabilityScore);
+
+  const weighted =
+    values * w.values +
+    lifestyle * w.lifestyle +
+    communication * w.communication +
+    interests * w.interests +
+    skills * w.skills;
+
+  // Centred so an average pair is unaffected; bounded to a modest nudge.
+  return Math.max(-8, Math.min(8, (weighted - 0.6) * 20));
+}
+
+function datingEvidence(
+  requester: UserProfile,
+  candidate: UserProfile,
+): { reasons: string[]; uncertainties: string[] } {
+  const reasons: string[] = [];
+  const uncertainties: string[] = [];
+  const shared = sharedInterests(requester, candidate);
+  const meta = DATING_META[candidate.id];
+
+  if (meta?.lookingFor) reasons.push(`Looking for: ${meta.lookingFor.toLowerCase()}.`);
+  if (shared.length) reasons.push(`You share ${shared.slice(0, 2).join(' and ')}.`);
+  if (meta?.interests?.length) reasons.push(`Spends free time on ${meta.interests.slice(0, 3).join(', ').toLowerCase()}.`);
+  if (Math.abs(requester.ocean.extraversion - candidate.ocean.extraversion) <= 15)
+    reasons.push('Similar social energy — evenings would likely look alike.');
+  if (Math.abs(requester.ocean.agreeableness - candidate.ocean.agreeableness) <= 12)
+    reasons.push('Close on warmth and how you handle disagreement.');
+  if (candidate.ocean.neuroticism <= 30) reasons.push('Steady under stress, by their own account.');
+  if (!reasons.length) reasons.push('Broad overlap without one standout factor yet.');
+
+  if (typeof meta?.distanceKm === 'number' && meta.distanceKm > 12)
+    uncertainties.push(`About ${meta.distanceKm} km away — worth checking how you both feel about that.`);
+  if (Math.abs(requester.availabilityHoursPerWeek - candidate.availabilityHoursPerWeek) > 8)
+    uncertainties.push('Your free time looks quite different week to week.');
+  uncertainties.push('Chemistry is not something a score can predict — treat this as a starting point.');
+
+  return { reasons: reasons.slice(0, 6), uncertainties: uncertainties.slice(0, 3) };
+}
+
 function evidence(
   requester: UserProfile,
   candidate: UserProfile,
   context: DiscoveryContext,
 ): { reasons: string[]; uncertainties: string[] } {
+  if (context === 'DATING') return datingEvidence(requester, candidate);
+
   const reasons: string[] = [];
   const uncertainties: string[] = [];
 
@@ -166,12 +257,14 @@ export function rankDiscovery(
 
   const ranked = pool
     .filter((c) => c.id !== requester.id && !seen.has(c.id))
+    .filter((c) => (context === 'DATING' ? c.subMode === 'DATING' : c.subMode !== 'DATING'))
     .map<RankedCandidate>((candidate) => {
       const result = evaluatePairwiseMatch(requester, candidate, subMode);
       const tags = candidateTags(candidate);
       const raw = tags.reduce((acc, t) => acc + (signal.weights[t] || 0), 0);
       // Bounded nudge so learned behaviour never dominates the deterministic score.
-      const behaviourAdjustment = Math.max(-6, Math.min(6, raw * 1.2));
+      const behaviourAdjustment =
+        Math.max(-6, Math.min(6, raw * 1.2)) + contextAdjustment(requester, candidate, context);
       const { reasons, uncertainties } = evidence(requester, candidate, context);
       return {
         candidate,
