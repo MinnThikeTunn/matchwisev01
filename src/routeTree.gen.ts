@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as IntroductionsRouteImport } from './routes/introductions'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ApiExplainMatchRouteImport } from './routes/api/explain-match'
 import { Route as ApiParseCustomMatchRouteImport } from './routes/api/parse-custom-match'
@@ -29,6 +30,11 @@ const AppRoute = AppRouteImport.update({
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntroductionsRoute = IntroductionsRouteImport.update({
+  id: '/introductions',
+  path: '/introductions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/discover': typeof DiscoverRoute
+  '/introductions': typeof IntroductionsRoute
   '/onboarding': typeof OnboardingRoute
   '/api/explain-match': typeof ApiExplainMatchRoute
   '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/discover': typeof DiscoverRoute
+  '/introductions': typeof IntroductionsRoute
   '/onboarding': typeof OnboardingRoute
   '/api/explain-match': typeof ApiExplainMatchRoute
   '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/discover': typeof DiscoverRoute
+  '/introductions': typeof IntroductionsRoute
   '/onboarding': typeof OnboardingRoute
   '/api/explain-match': typeof ApiExplainMatchRoute
   '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/discover'
+    | '/introductions'
     | '/onboarding'
     | '/api/explain-match'
     | '/api/parse-custom-match'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/discover'
+    | '/introductions'
     | '/onboarding'
     | '/api/explain-match'
     | '/api/parse-custom-match'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/discover'
+    | '/introductions'
     | '/onboarding'
     | '/api/explain-match'
     | '/api/parse-custom-match'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRoute
   DiscoverRoute: typeof DiscoverRoute
+  IntroductionsRoute: typeof IntroductionsRoute
   OnboardingRoute: typeof OnboardingRoute
   ApiExplainMatchRoute: typeof ApiExplainMatchRoute
   ApiParseCustomMatchRoute: typeof ApiParseCustomMatchRoute
@@ -129,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/discover'
       fullPath: '/discover'
       preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/introductions': {
+      id: '/introductions'
+      path: '/introductions'
+      fullPath: '/introductions'
+      preLoaderRoute: typeof IntroductionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRoute,
   DiscoverRoute: DiscoverRoute,
+  IntroductionsRoute: IntroductionsRoute,
   OnboardingRoute: OnboardingRoute,
   ApiExplainMatchRoute: ApiExplainMatchRoute,
   ApiParseCustomMatchRoute: ApiParseCustomMatchRoute,
