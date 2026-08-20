@@ -9,6 +9,8 @@ import { SynergyMatchView } from './components/SynergyMatchView';
 import { IntroductionsView } from './components/IntroductionsView';
 import { ChatsView } from './components/ChatsView';
 import { DemoGuide } from './components/DemoGuide';
+import { useStage } from './components/stage/useStage';
+import { reachStep } from './lib/twoStage';
 import { ProfileView } from './components/ProfileView';
 import { ColorSystemView } from './components/ColorSystemView';
 import { CustomAiMatchModal } from './components/CustomAiMatchModal';
@@ -29,6 +31,7 @@ import {
 } from './lib/cloudProfile';
 
 export default function App() {
+  const stage = useStage();
   const [currentView, setCurrentView] = useState<ViewMode>('dashboard');
   
   // Load saved user profile if available, otherwise default to CURRENT_USER
@@ -72,6 +75,14 @@ export default function App() {
       return false;
     }
   });
+
+  // The guided demo runs on a prefilled demo profile — skip the onboarding modal.
+  useEffect(() => {
+    if (stage.demoMode) {
+      setIsQuestionnaireOpen(false);
+      if (stage.step < 1) reachStep(1);
+    }
+  }, [stage.demoMode, stage.step]);
 
   const handleUpdateUser = (updated: UserProfile) => {
     setCurrentUser(updated);
