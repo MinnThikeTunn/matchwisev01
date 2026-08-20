@@ -47,7 +47,7 @@ export const VerificationView: React.FC<VerificationViewProps> = ({ currentUser 
           Proof of Chromatic Signature
         </h1>
         <p className="mt-1 text-xs sm:text-sm text-stone-500 leading-relaxed">
-          Standardized document asserting the authenticity and exact chromatic spectrum of the assigned Prism identity.
+          Standardized document asserting the authenticity and exact profile of the assigned Prism identity.
         </p>
 
         {/* PRISM ID & COLOR IDENTITY */}

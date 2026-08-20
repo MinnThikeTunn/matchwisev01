@@ -44,7 +44,7 @@ export const SynergyMatchView: React.FC<SynergyMatchViewProps> = ({
   const harmonic = getPairwiseColorHarmonics(requester.id, candidate.id);
 
   const [collaborationMessage, setCollaborationMessage] = useState(
-    `Hi ${candidate.name},\n\nI reviewed our Matchwise Prism chromatic synergy (${harmonic.title}). I'd love to connect and harmonize across ${requester.needsOffers.offers[0]} and ${candidate.needsOffers.offers[0]}.\n\nBest,\n${requester.name}`
+    `Hi ${candidate.name},\n\nI reviewed our Matchwise compatibility (${harmonic.title}). I'd love to connect and harmonize across ${requester.needsOffers.offers[0]} and ${candidate.needsOffers.offers[0]}.\n\nBest,\n${requester.name}`
   );
   const [isSent, setIsSent] = useState(false);
 
@@ -123,7 +123,7 @@ export const SynergyMatchView: React.FC<SynergyMatchViewProps> = ({
         </div>
 
         <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-stone-900 tracking-tight">
-          Chromatic Synergy Resonance
+          Why you two
         </h1>
 
         <p className="mt-2 text-xs sm:text-sm text-stone-500 leading-relaxed max-w-2xl mx-auto">
@@ -232,7 +232,7 @@ export const SynergyMatchView: React.FC<SynergyMatchViewProps> = ({
           <div>
             <div className="flex items-center justify-between pb-4 border-b border-stone-100 mb-6">
               <h2 className="text-base font-bold text-stone-800">
-                XAI Chromatic Drivers
+                What drives this fit
               </h2>
               <button
                 onClick={handleRegenerateXai}
@@ -371,7 +371,7 @@ export const SynergyMatchView: React.FC<SynergyMatchViewProps> = ({
               id="initiate-collaboration-btn"
             >
               <Palette className="w-4 h-4 text-amber-300" />
-              <span>Initiate Chromatic Collaboration</span>
+              <span>Send an introduction</span>
             </button>
           </div>
         </div>
@@ -396,7 +396,7 @@ export const SynergyMatchView: React.FC<SynergyMatchViewProps> = ({
 
             <div className="mt-4 space-y-3">
               <label className="block text-xs font-semibold text-stone-700">
-                Chromatic Synergy Proposal
+                Introduction message
               </label>
               <textarea
                 rows={5}
