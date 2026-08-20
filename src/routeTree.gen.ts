@@ -17,6 +17,7 @@ import { Route as IntroductionsRouteImport } from './routes/introductions'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ApiExplainMatchRouteImport } from './routes/api/explain-match'
 import { Route as ApiParseCustomMatchRouteImport } from './routes/api/parse-custom-match'
+import { Route as ChatMatchIdRouteImport } from './routes/chat.$matchId'
 import { Route as IntroductionIdRouteImport } from './routes/introduction.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -59,6 +60,11 @@ const ApiParseCustomMatchRoute = ApiParseCustomMatchRouteImport.update({
   path: '/api/parse-custom-match',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatMatchIdRoute = ChatMatchIdRouteImport.update({
+  id: '/chat/$matchId',
+  path: '/chat/$matchId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IntroductionIdRoute = IntroductionIdRouteImport.update({
   id: '/introduction/$id',
   path: '/introduction/$id',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/api/explain-match': typeof ApiExplainMatchRoute
   '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
+  '/chat/$matchId': typeof ChatMatchIdRoute
   '/introduction/$id': typeof IntroductionIdRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/api/explain-match': typeof ApiExplainMatchRoute
   '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
+  '/chat/$matchId': typeof ChatMatchIdRoute
   '/introduction/$id': typeof IntroductionIdRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/api/explain-match': typeof ApiExplainMatchRoute
   '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
+  '/chat/$matchId': typeof ChatMatchIdRoute
   '/introduction/$id': typeof IntroductionIdRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/api/explain-match'
     | '/api/parse-custom-match'
+    | '/chat/$matchId'
     | '/introduction/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/api/explain-match'
     | '/api/parse-custom-match'
+    | '/chat/$matchId'
     | '/introduction/$id'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/api/explain-match'
     | '/api/parse-custom-match'
+    | '/chat/$matchId'
     | '/introduction/$id'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   ApiExplainMatchRoute: typeof ApiExplainMatchRoute
   ApiParseCustomMatchRoute: typeof ApiParseCustomMatchRoute
+  ChatMatchIdRoute: typeof ChatMatchIdRoute
   IntroductionIdRoute: typeof IntroductionIdRoute
 }
 
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiParseCustomMatchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat/$matchId': {
+      id: '/chat/$matchId'
+      path: '/chat/$matchId'
+      fullPath: '/chat/$matchId'
+      preLoaderRoute: typeof ChatMatchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/introduction/$id': {
       id: '/introduction/$id'
       path: '/introduction/$id'
@@ -224,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   ApiExplainMatchRoute: ApiExplainMatchRoute,
   ApiParseCustomMatchRoute: ApiParseCustomMatchRoute,
+  ChatMatchIdRoute: ChatMatchIdRoute,
   IntroductionIdRoute: IntroductionIdRoute,
 }
 export const routeTree = rootRouteImport
