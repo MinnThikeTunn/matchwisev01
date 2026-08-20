@@ -44,7 +44,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenChromaticTest,
   currentUser,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userColor = getColorIdentity(currentUser.id);
@@ -76,14 +75,6 @@ export const Header: React.FC<HeaderProps> = ({
   const handleNavClick = (view: ViewMode) => {
     onViewChange(view);
     setIsMobileMenuOpen(false);
-  };
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      onOpenNetwork();
-      setIsMobileMenuOpen(false);
-    }
   };
 
   const navItems = [
