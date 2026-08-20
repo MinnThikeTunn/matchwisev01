@@ -142,7 +142,7 @@ export function DiscoveryView({
       <div className="grid lg:grid-cols-[minmax(0,1fr)_320px] gap-8 items-start">
         {/* Card stack */}
         <div>
-          <div className="relative h-[560px] sm:h-[600px]">
+          <div className="relative mx-auto w-full max-w-[420px] h-[560px] sm:h-[620px]">
             {upcoming
               .slice()
               .reverse()
@@ -362,11 +362,18 @@ function SwipeCard({
         PASS
       </motion.div>
 
-      <div className="relative w-full shrink-0 aspect-[4/5] max-h-[58%] bg-stone-100">
+      <div className="relative w-full shrink-0 h-[54%] overflow-hidden bg-stone-900">
+        <img
+          src={c.avatar}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
+          draggable={false}
+        />
         <img
           src={c.avatar}
           alt={c.name}
-          className="w-full h-full object-cover object-top"
+          className="relative w-full h-full object-contain"
           draggable={false}
         />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5">
