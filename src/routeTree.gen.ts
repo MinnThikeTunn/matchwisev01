@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as ChatsRouteImport } from './routes/chats'
+import { Route as DemoCompleteRouteImport } from './routes/demo-complete'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as IntroductionsRouteImport } from './routes/introductions'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -34,6 +35,11 @@ const AppRoute = AppRouteImport.update({
 const ChatsRoute = ChatsRouteImport.update({
   id: '/chats',
   path: '/chats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoCompleteRoute = DemoCompleteRouteImport.update({
+  id: '/demo-complete',
+  path: '/demo-complete',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscoverRoute = DiscoverRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/chats': typeof ChatsRoute
+  '/demo-complete': typeof DemoCompleteRoute
   '/discover': typeof DiscoverRoute
   '/introductions': typeof IntroductionsRoute
   '/onboarding': typeof OnboardingRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/chats': typeof ChatsRoute
+  '/demo-complete': typeof DemoCompleteRoute
   '/discover': typeof DiscoverRoute
   '/introductions': typeof IntroductionsRoute
   '/onboarding': typeof OnboardingRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/chats': typeof ChatsRoute
+  '/demo-complete': typeof DemoCompleteRoute
   '/discover': typeof DiscoverRoute
   '/introductions': typeof IntroductionsRoute
   '/onboarding': typeof OnboardingRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/chats'
+    | '/demo-complete'
     | '/discover'
     | '/introductions'
     | '/onboarding'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/chats'
+    | '/demo-complete'
     | '/discover'
     | '/introductions'
     | '/onboarding'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/chats'
+    | '/demo-complete'
     | '/discover'
     | '/introductions'
     | '/onboarding'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRoute
   ChatsRoute: typeof ChatsRoute
+  DemoCompleteRoute: typeof DemoCompleteRoute
   DiscoverRoute: typeof DiscoverRoute
   IntroductionsRoute: typeof IntroductionsRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -194,6 +207,13 @@ declare module '@tanstack/react-router' {
       path: '/chats'
       fullPath: '/chats'
       preLoaderRoute: typeof ChatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo-complete': {
+      id: '/demo-complete'
+      path: '/demo-complete'
+      fullPath: '/demo-complete'
+      preLoaderRoute: typeof DemoCompleteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/discover': {
@@ -259,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRoute,
   ChatsRoute: ChatsRoute,
+  DemoCompleteRoute: DemoCompleteRoute,
   DiscoverRoute: DiscoverRoute,
   IntroductionsRoute: IntroductionsRoute,
   OnboardingRoute: OnboardingRoute,
