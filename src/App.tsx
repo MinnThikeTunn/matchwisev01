@@ -6,6 +6,11 @@ import { MapsView } from './components/MapsView';
 import { DiscoveryView } from './components/DiscoveryView';
 import { VerificationView } from './components/VerificationView';
 import { SynergyMatchView } from './components/SynergyMatchView';
+import { IntroductionsView } from './components/IntroductionsView';
+import { ChatsView } from './components/ChatsView';
+import { DemoGuide } from './components/DemoGuide';
+import { useStage } from './components/stage/useStage';
+import { reachStep } from './lib/twoStage';
 import { ProfileView } from './components/ProfileView';
 import { ColorSystemView } from './components/ColorSystemView';
 import { CustomAiMatchModal } from './components/CustomAiMatchModal';
@@ -26,6 +31,7 @@ import {
 } from './lib/cloudProfile';
 
 export default function App() {
+  const stage = useStage();
   const [currentView, setCurrentView] = useState<ViewMode>('dashboard');
   
   // Load saved user profile if available, otherwise default to CURRENT_USER
@@ -45,6 +51,7 @@ export default function App() {
   );
 
   const [highContrast, setHighContrast] = useState(false);
+  const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
 
   // Check if first-timer (test not completed yet in localStorage)
   const [isFirstTimer, setIsFirstTimer] = useState<boolean>(() => {
@@ -68,6 +75,14 @@ export default function App() {
       return false;
     }
   });
+
+  // The guided demo runs on a prefilled demo profile — skip the onboarding modal.
+  useEffect(() => {
+    if (stage.demoMode) {
+      setIsQuestionnaireOpen(false);
+      if (stage.step < 1) reachStep(1);
+    }
+  }, [stage.demoMode, stage.step]);
 
   const handleUpdateUser = (updated: UserProfile) => {
     setCurrentUser(updated);
@@ -120,8 +135,11 @@ export default function App() {
     setIsFirstTimer(false);
   };
 
+  const [synergyOrigin, setSynergyOrigin] = useState<ViewMode>('dashboard');
+
   const handleSelectCandidate = (candidate: UserProfile) => {
     setSelectedCandidate(candidate);
+    setSynergyOrigin(currentView === 'synergy' ? synergyOrigin : currentView);
     setCurrentView('synergy');
   };
 
@@ -144,6 +162,8 @@ export default function App() {
         highContrast={highContrast}
       />
 
+      <DemoGuide onRestartFlow={() => setCurrentView('discovery')} />
+
       {/* Main Screen Content */}
       <main className="flex-1">
         {currentView === 'dashboard' && (
@@ -165,6 +185,25 @@ export default function App() {
             currentUser={currentUser}
             candidatePool={candidatePool}
             onSelectCandidate={handleSelectCandidate}
+            onOpenIntroductions={() => setCurrentView('introductions')}
+          />
+        )}
+
+        {currentView === 'introductions' && (
+          <IntroductionsView
+            currentUser={currentUser}
+            candidatePool={candidatePool}
+            onSelectCandidate={handleSelectCandidate}
+            onOpenChats={() => setCurrentView('chats')}
+          />
+        )}
+
+        {currentView === 'chats' && (
+          <ChatsView
+            currentUser={currentUser}
+            candidatePool={candidatePool}
+            activeId={activeThreadId}
+            onSelectThread={setActiveThreadId}
           />
         )}
 
@@ -201,7 +240,12 @@ export default function App() {
           <SynergyMatchView
             requester={currentUser}
             candidate={selectedCandidate}
-            onBack={() => setCurrentView('dashboard')}
+            candidatePool={candidatePool}
+            onOpenChat={(id) => {
+              setActiveThreadId(id);
+              setCurrentView('chats');
+            }}
+            onBack={() => setCurrentView(synergyOrigin)}
           />
         )}
       </main>

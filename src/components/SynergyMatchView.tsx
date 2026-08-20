@@ -16,17 +16,22 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { getColorIdentity, getPairwiseColorHarmonics } from '../lib/colorSystem';
+import { TwoStageDecision } from './TwoStageDecision';
 
 interface SynergyMatchViewProps {
   requester: UserProfile;
   candidate: UserProfile;
   onBack: () => void;
+  candidatePool?: UserProfile[];
+  onOpenChat?: (candidateId: string) => void;
 }
 
 export const SynergyMatchView: React.FC<SynergyMatchViewProps> = ({
   requester,
   candidate,
-  onBack
+  onBack,
+  candidatePool,
+  onOpenChat
 }) => {
   const [matchResult, setMatchResult] = useState<MatchResult>(() =>
     evaluatePairwiseMatch(requester, candidate)
@@ -99,6 +104,16 @@ export const SynergyMatchView: React.FC<SynergyMatchViewProps> = ({
         <ArrowLeft className="w-4 h-4" />
         <span>Back</span>
       </button>
+
+      {/* Stage 2: deliberate, explainable decision */}
+      {candidatePool && (
+        <TwoStageDecision
+          currentUser={requester}
+          candidate={candidate}
+          candidatePool={candidatePool}
+          onOpenChat={onOpenChat}
+        />
+      )}
 
       {/* Header Section with Pure Color Harmony */}
       <div className="mb-6 sm:mb-8 text-center max-w-3xl mx-auto">

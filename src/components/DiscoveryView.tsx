@@ -29,14 +29,24 @@ import {
   saveSwipes,
   topLearnedTags,
 } from '../lib/discovery';
+import { recordSignal, reachStep, undoLastSignal } from '../lib/twoStage';
+import { useStage } from './stage/useStage';
 
 interface DiscoveryViewProps {
   currentUser: UserProfile;
   candidatePool: UserProfile[];
   onSelectCandidate: (candidate: UserProfile) => void;
+  onOpenIntroductions: () => void;
 }
 
-export function DiscoveryView({ currentUser, candidatePool, onSelectCandidate }: DiscoveryViewProps) {
+export function DiscoveryView({
+  currentUser,
+  candidatePool,
+  onSelectCandidate,
+  onOpenIntroductions,
+}: DiscoveryViewProps) {
+  const stage = useStage();
+  const [signalToast, setSignalToast] = useState('');
   const [context, setContext] = useState<DiscoveryContext>('COLLABORATE');
   const [swipes, setSwipes] = useState<SwipeRecord[]>(() => loadSwipes());
   const [showDebug, setShowDebug] = useState(false);
@@ -67,12 +77,18 @@ export function DiscoveryView({ currentUser, candidatePool, onSelectCandidate }:
     ];
     setSwipes(next);
     saveSwipes(next);
+    // Stage 1: a private interest signal — it nudges Stage 2, it never creates a match.
+    recordSignal(candidate.id, action === 'like' ? 'curious' : 'pass');
+    setSignalToast('Signal saved privately — this is not a match.');
+    window.setTimeout(() => setSignalToast(''), 2400);
+    if (Object.keys(stage.signals).length + 1 >= 2) reachStep(3);
   };
 
   const undo = () => {
     const next = swipes.slice(0, -1);
     setSwipes(next);
     saveSwipes(next);
+    undoLastSignal();
   };
 
   const reset = () => {
@@ -94,8 +110,9 @@ export function DiscoveryView({ currentUser, candidatePool, onSelectCandidate }:
           One card at a time
         </h1>
         <p className="mt-2 text-stone-600 max-w-2xl text-sm sm:text-base">
-          Deterministic ranking chooses who you see. Your like / pass behaviour becomes a preference
-          signal that nudges — never overrides — the engine.
+          A swipe here is a <strong className="font-semibold text-stone-800">private interest
+          signal</strong>, not a match. It stays with you and only nudges — never overrides — the
+          introductions the engine proposes.
         </p>
       </header>
 
@@ -268,6 +285,21 @@ export function DiscoveryView({ currentUser, candidatePool, onSelectCandidate }:
           </button>
         </aside>
       </div>
+
+      {Object.keys(stage.signals).length >= 2 && (
+        <button
+          onClick={onOpenIntroductions}
+          className="mt-8 w-full rounded-full bg-stone-900 px-6 py-3.5 text-sm font-semibold text-white hover:bg-stone-800"
+        >
+          See your introductions ({Object.keys(stage.signals).length} private signals)
+        </button>
+      )}
+
+      {signalToast && (
+        <div className="fixed bottom-8 left-1/2 z-40 -translate-x-1/2 rounded-full bg-stone-900 px-5 py-2.5 text-sm text-white shadow-lg">
+          {signalToast}
+        </div>
+      )}
     </div>
   );
 }
