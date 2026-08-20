@@ -3,8 +3,8 @@ import { evaluatePairwiseMatch } from './algorithm';
 
 export const MATCH_VERSION = 'MATCHWISE_MATCH_V1_0';
 
-/** Non-romantic discovery contexts. */
-export type DiscoveryContext = 'COLLABORATE' | 'STUDY' | 'FRIENDS' | 'TEAMS';
+/** Discovery contexts. Dating is the primary one. */
+export type DiscoveryContext = 'DATING' | 'COLLABORATE' | 'STUDY' | 'FRIENDS' | 'TEAMS';
 
 export const DISCOVERY_CONTEXTS: {
   id: DiscoveryContext;
@@ -12,11 +12,28 @@ export const DISCOVERY_CONTEXTS: {
   subMode: IntentSubMode;
   blurb: string;
 }[] = [
+  { id: 'DATING', label: 'Dating', subMode: 'DATING', blurb: 'Romantic intent, values & lifestyle fit' },
   { id: 'COLLABORATE', label: 'Collaborate', subMode: 'NETWORKING', blurb: 'Skill exchange & co-building' },
   { id: 'STUDY', label: 'Study', subMode: 'STUDY_PARTNERS', blurb: 'Peers, tutors & learners' },
   { id: 'FRIENDS', label: 'Community', subMode: 'FRIENDS', blurb: 'Social rhythm & shared activities' },
   { id: 'TEAMS', label: 'Teams', subMode: 'PROJECT_GROUPS', blurb: 'Role coverage & delivery fit' },
 ];
+
+/**
+ * Per-context weighting. Dating leans on values, lifestyle, communication and
+ * interests; the working contexts lean on complementary skills and delivery.
+ */
+export const CONTEXT_WEIGHTS: Record<
+  DiscoveryContext,
+  { values: number; lifestyle: number; communication: number; interests: number; skills: number }
+> = {
+  DATING: { values: 0.3, lifestyle: 0.22, communication: 0.2, interests: 0.2, skills: 0.08 },
+  COLLABORATE: { values: 0.15, lifestyle: 0.05, communication: 0.15, interests: 0.15, skills: 0.5 },
+  STUDY: { values: 0.15, lifestyle: 0.1, communication: 0.2, interests: 0.15, skills: 0.4 },
+  FRIENDS: { values: 0.2, lifestyle: 0.25, communication: 0.15, interests: 0.3, skills: 0.1 },
+  TEAMS: { values: 0.15, lifestyle: 0.05, communication: 0.15, interests: 0.1, skills: 0.55 },
+};
+
 
 export type SwipeAction = 'like' | 'pass';
 
