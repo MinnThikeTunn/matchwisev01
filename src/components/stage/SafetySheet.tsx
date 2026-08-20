@@ -31,8 +31,8 @@ export function SafetySheet({
       <div className="w-full max-w-lg rounded-t-3xl border border-stone-900/10 bg-white p-6 pb-8 shadow-2xl">
         <div className="mb-4 flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <ShieldCheck size={18} className="text-[#0D7A94]" />
-            <h2 className="font-[Playfair_Display] text-xl">Safety &amp; control</h2>
+            <ShieldCheck size={18} className="text-[#0A6275]" />
+            <h2 className="text-lg font-bold">Safety &amp; control</h2>
           </div>
           <button aria-label="Close safety sheet" onClick={onClose} className="text-stone-400">
             <X size={18} />
@@ -40,7 +40,7 @@ export function SafetySheet({
         </div>
 
         {done ? (
-          <div className="rounded-2xl bg-[#F4F7F4] p-4 text-sm text-stone-700">{done}</div>
+          <div className="rounded-2xl bg-[#F5F5F4] p-4 text-sm text-stone-700">{done}</div>
         ) : reporting ? (
           <div>
             <p className="mb-3 text-sm text-stone-500">Why are you reporting {candidateName}?</p>
@@ -68,7 +68,7 @@ export function SafetySheet({
               <ul className="space-y-1.5 text-sm text-stone-700">
                 {MEETING_CHECKLIST.map((item) => (
                   <li key={item} className="flex gap-2">
-                    <span className="text-[#A8C7A3]">•</span>
+                    <span className="text-[#D97706]">•</span>
                     {item}
                   </li>
                 ))}
@@ -98,7 +98,7 @@ export function SafetySheet({
                   setDone('You left the conversation. No message was sent to them.');
                   onLeft?.();
                 }}
-                className="rounded-xl bg-[#B94A48] px-4 py-3 text-sm font-medium text-white"
+                className="rounded-xl bg-[#B91C1C] px-4 py-3 text-sm font-medium text-white"
               >
                 Leave the conversation
               </button>
