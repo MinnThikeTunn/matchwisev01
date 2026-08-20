@@ -185,7 +185,7 @@ export function MatchwiseProvider({ children }: { children: ReactNode }) {
           ? scorePair(demoUser, profilesById[profileId], signalValue(state.signals[profileId] ?? null, null))
           : undefined),
     };
-  }, [state, hydrated, patch]);
+  }, [state, hydrated, patch, actions]);
 
   return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>;
 }
