@@ -106,6 +106,17 @@ export function MatchwiseProvider({ children }: { children: ReactNode }) {
 
   const patch = useCallback((fn: (s: State) => State) => setState((s) => fn(s)), []);
 
+  // Actions are memoized on `patch` alone so their identity is stable across
+  // state changes; effects depending on them must not re-run every render.
+  const actions = useMemo(
+    () => ({
+      startDemo: () => patch((s) => ({ ...s, demoMode: true, step: "profile" as DemoStep })),
+      restartDemo: () => setState({ ...initialState, demoMode: true, step: "profile" }),
+      setStep: (step: DemoStep) => patch((s) => (s.step === step ? s : { ...s, step })),
+    }),
+    [patch],
+  );
+
   const store = useMemo<Store>(() => {
     const scored = candidates
       .filter((c) => !state.blocked.includes(c.id) && !state.hidden.includes(c.id))
@@ -122,9 +133,7 @@ export function MatchwiseProvider({ children }: { children: ReactNode }) {
     return {
       ...state,
       hydrated,
-      startDemo: () => patch((s) => ({ ...s, demoMode: true, step: "profile" })),
-      restartDemo: () => setState({ ...initialState, demoMode: true, step: "profile" }),
-      setStep: (step) => patch((s) => (s.step === step ? s : { ...s, step })),
+      ...actions,
       sendSignal: (profileId, direction) =>
         patch((s) => ({ ...s, signals: { ...s.signals, [profileId]: direction } })),
       undoSignal: (profileId) =>
