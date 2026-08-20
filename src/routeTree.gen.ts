@@ -10,141 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ChatsRouteImport } from './routes/chats'
-import { Route as DemoCompleteRouteImport } from './routes/demo-complete'
-import { Route as DiscoverRouteImport } from './routes/discover'
-import { Route as IntroductionsRouteImport } from './routes/introductions'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as ChatMatchIdRouteImport } from './routes/chat.$matchId'
-import { Route as IntroductionIdRouteImport } from './routes/introduction.$id'
+import { Route as ApiExplainMatchRouteImport } from './routes/api/explain-match'
+import { Route as ApiParseCustomMatchRouteImport } from './routes/api/parse-custom-match'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChatsRoute = ChatsRouteImport.update({
-  id: '/chats',
-  path: '/chats',
+const ApiExplainMatchRoute = ApiExplainMatchRouteImport.update({
+  id: '/api/explain-match',
+  path: '/api/explain-match',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoCompleteRoute = DemoCompleteRouteImport.update({
-  id: '/demo-complete',
-  path: '/demo-complete',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DiscoverRoute = DiscoverRouteImport.update({
-  id: '/discover',
-  path: '/discover',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IntroductionsRoute = IntroductionsRouteImport.update({
-  id: '/introductions',
-  path: '/introductions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ChatMatchIdRoute = ChatMatchIdRouteImport.update({
-  id: '/chat/$matchId',
-  path: '/chat/$matchId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IntroductionIdRoute = IntroductionIdRouteImport.update({
-  id: '/introduction/$id',
-  path: '/introduction/$id',
+const ApiParseCustomMatchRoute = ApiParseCustomMatchRouteImport.update({
+  id: '/api/parse-custom-match',
+  path: '/api/parse-custom-match',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/chats': typeof ChatsRoute
-  '/demo-complete': typeof DemoCompleteRoute
-  '/discover': typeof DiscoverRoute
-  '/introductions': typeof IntroductionsRoute
-  '/onboarding': typeof OnboardingRoute
-  '/profile': typeof ProfileRoute
-  '/chat/$matchId': typeof ChatMatchIdRoute
-  '/introduction/$id': typeof IntroductionIdRoute
+  '/api/explain-match': typeof ApiExplainMatchRoute
+  '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/chats': typeof ChatsRoute
-  '/demo-complete': typeof DemoCompleteRoute
-  '/discover': typeof DiscoverRoute
-  '/introductions': typeof IntroductionsRoute
-  '/onboarding': typeof OnboardingRoute
-  '/profile': typeof ProfileRoute
-  '/chat/$matchId': typeof ChatMatchIdRoute
-  '/introduction/$id': typeof IntroductionIdRoute
+  '/api/explain-match': typeof ApiExplainMatchRoute
+  '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/chats': typeof ChatsRoute
-  '/demo-complete': typeof DemoCompleteRoute
-  '/discover': typeof DiscoverRoute
-  '/introductions': typeof IntroductionsRoute
-  '/onboarding': typeof OnboardingRoute
-  '/profile': typeof ProfileRoute
-  '/chat/$matchId': typeof ChatMatchIdRoute
-  '/introduction/$id': typeof IntroductionIdRoute
+  '/api/explain-match': typeof ApiExplainMatchRoute
+  '/api/parse-custom-match': typeof ApiParseCustomMatchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/chats'
-    | '/demo-complete'
-    | '/discover'
-    | '/introductions'
-    | '/onboarding'
-    | '/profile'
-    | '/chat/$matchId'
-    | '/introduction/$id'
+  fullPaths: '/' | '/api/explain-match' | '/api/parse-custom-match'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/chats'
-    | '/demo-complete'
-    | '/discover'
-    | '/introductions'
-    | '/onboarding'
-    | '/profile'
-    | '/chat/$matchId'
-    | '/introduction/$id'
-  id:
-    | '__root__'
-    | '/'
-    | '/chats'
-    | '/demo-complete'
-    | '/discover'
-    | '/introductions'
-    | '/onboarding'
-    | '/profile'
-    | '/chat/$matchId'
-    | '/introduction/$id'
+  to: '/' | '/api/explain-match' | '/api/parse-custom-match'
+  id: '__root__' | '/' | '/api/explain-match' | '/api/parse-custom-match'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ChatsRoute: typeof ChatsRoute
-  DemoCompleteRoute: typeof DemoCompleteRoute
-  DiscoverRoute: typeof DiscoverRoute
-  IntroductionsRoute: typeof IntroductionsRoute
-  OnboardingRoute: typeof OnboardingRoute
-  ProfileRoute: typeof ProfileRoute
-  ChatMatchIdRoute: typeof ChatMatchIdRoute
-  IntroductionIdRoute: typeof IntroductionIdRoute
+  ApiExplainMatchRoute: typeof ApiExplainMatchRoute
+  ApiParseCustomMatchRoute: typeof ApiParseCustomMatchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -156,60 +68,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chats': {
-      id: '/chats'
-      path: '/chats'
-      fullPath: '/chats'
-      preLoaderRoute: typeof ChatsRouteImport
+    '/api/explain-match': {
+      id: '/api/explain-match'
+      path: '/api/explain-match'
+      fullPath: '/api/explain-match'
+      preLoaderRoute: typeof ApiExplainMatchRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo-complete': {
-      id: '/demo-complete'
-      path: '/demo-complete'
-      fullPath: '/demo-complete'
-      preLoaderRoute: typeof DemoCompleteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/discover': {
-      id: '/discover'
-      path: '/discover'
-      fullPath: '/discover'
-      preLoaderRoute: typeof DiscoverRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/introductions': {
-      id: '/introductions'
-      path: '/introductions'
-      fullPath: '/introductions'
-      preLoaderRoute: typeof IntroductionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/chat/$matchId': {
-      id: '/chat/$matchId'
-      path: '/chat/$matchId'
-      fullPath: '/chat/$matchId'
-      preLoaderRoute: typeof ChatMatchIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/introduction/$id': {
-      id: '/introduction/$id'
-      path: '/introduction/$id'
-      fullPath: '/introduction/$id'
-      preLoaderRoute: typeof IntroductionIdRouteImport
+    '/api/parse-custom-match': {
+      id: '/api/parse-custom-match'
+      path: '/api/parse-custom-match'
+      fullPath: '/api/parse-custom-match'
+      preLoaderRoute: typeof ApiParseCustomMatchRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -217,14 +87,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ChatsRoute: ChatsRoute,
-  DemoCompleteRoute: DemoCompleteRoute,
-  DiscoverRoute: DiscoverRoute,
-  IntroductionsRoute: IntroductionsRoute,
-  OnboardingRoute: OnboardingRoute,
-  ProfileRoute: ProfileRoute,
-  ChatMatchIdRoute: ChatMatchIdRoute,
-  IntroductionIdRoute: IntroductionIdRoute,
+  ApiExplainMatchRoute: ApiExplainMatchRoute,
+  ApiParseCustomMatchRoute: ApiParseCustomMatchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
