@@ -335,7 +335,7 @@ function SwipeCard({
 
   return (
     <motion.article
-      className="absolute inset-0 z-10 rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-lg cursor-grab active:cursor-grabbing"
+      className="absolute inset-0 z-10 flex flex-col rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-lg cursor-grab active:cursor-grabbing"
       style={{ x, rotate }}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
@@ -362,8 +362,13 @@ function SwipeCard({
         PASS
       </motion.div>
 
-      <div className="relative h-[46%]">
-        <img src={c.avatar} alt={c.name} className="w-full h-full object-cover" draggable={false} />
+      <div className="relative w-full shrink-0 aspect-[4/5] max-h-[58%] bg-stone-100">
+        <img
+          src={c.avatar}
+          alt={c.name}
+          className="w-full h-full object-cover object-top"
+          draggable={false}
+        />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5">
           <div className="flex items-center gap-2">
             <h3 className="text-xl font-semibold text-white">{c.name}</h3>
@@ -377,7 +382,7 @@ function SwipeCard({
         </div>
       </div>
 
-      <div className="h-[54%] overflow-y-auto p-5">
+      <div className="min-h-0 flex-1 overflow-y-auto p-5">
         <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500">
           <span className="inline-flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5" /> {c.location}
