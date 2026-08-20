@@ -29,6 +29,7 @@ import {
   saveSwipes,
   topLearnedTags,
 } from '../lib/discovery';
+import { DATING_META } from '../data/datingProfiles';
 import { recordSignal, reachStep, undoLastSignal } from '../lib/twoStage';
 import { useStage } from './stage/useStage';
 
@@ -47,7 +48,7 @@ export function DiscoveryView({
 }: DiscoveryViewProps) {
   const stage = useStage();
   const [signalToast, setSignalToast] = useState('');
-  const [context, setContext] = useState<DiscoveryContext>('COLLABORATE');
+  const [context, setContext] = useState<DiscoveryContext>('DATING');
   const [swipes, setSwipes] = useState<SwipeRecord[]>(() => loadSwipes());
   const [showDebug, setShowDebug] = useState(false);
 
@@ -168,6 +169,7 @@ export function DiscoveryView({
                   onPass={() => record(top.candidate, 'pass')}
                   onOpen={() => onSelectCandidate(top.candidate)}
                   showDebug={showDebug}
+                  context={context}
                 />
               ) : (
                 <div className="absolute inset-0 rounded-3xl border border-dashed border-stone-300 bg-white/60 flex flex-col items-center justify-center text-center px-8">
@@ -319,12 +321,14 @@ function SwipeCard({
   onPass,
   onOpen,
   showDebug,
+  context,
 }: {
   ranked: RankedCandidate;
   onLike: () => void;
   onPass: () => void;
   onOpen: () => void;
   showDebug: boolean;
+  context: DiscoveryContext;
 }) {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-250, 250], [-12, 12]);
@@ -332,6 +336,8 @@ function SwipeCard({
   const passOpacity = useTransform(x, [-160, -40], [1, 0]);
   const [flipped, setFlipped] = useState(false);
   const c = ranked.candidate;
+  const isDating = context === 'DATING';
+  const meta = DATING_META[c.id];
 
   return (
     <motion.article
@@ -390,29 +396,64 @@ function SwipeCard({
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto p-5">
-        <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500">
-          <span className="inline-flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5" /> {c.location}
-          </span>
-          <span className="inline-flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5" /> {c.availabilityHoursPerWeek}h / week
-          </span>
-        </div>
+        {isDating ? (
+          <>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500">
+              {meta?.age && <span className="font-semibold text-stone-700">{meta.age}</span>}
+              <span className="inline-flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5" />
+                {meta ? `${meta.distanceKm} km away` : c.location}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Heart className="w-3.5 h-3.5" />
+                {meta?.lookingFor ?? 'Dating'}
+              </span>
+            </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
-          {c.needsOffers.offers.slice(0, 4).map((o) => (
-            <span key={o} className="rounded-full bg-stone-100 px-2.5 py-1 text-xs text-stone-700">
-              {o}
-            </span>
-          ))}
-        </div>
+            <p className="mt-3 text-sm text-stone-700 leading-relaxed">{c.bio}</p>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {(meta?.interests ?? []).slice(0, 5).map((o) => (
+                <span key={o} className="rounded-full bg-stone-100 px-2.5 py-1 text-xs text-stone-700">
+                  {o}
+                </span>
+              ))}
+            </div>
+
+            {meta?.worthKnowing && (
+              <p className="mt-3 rounded-xl bg-amber-50/70 px-3 py-2 text-xs text-stone-700">
+                <span className="font-semibold text-stone-900">Worth knowing · </span>
+                {meta.worthKnowing}
+              </p>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500">
+              <span className="inline-flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5" /> {c.location}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5" /> {c.availabilityHoursPerWeek}h / week
+              </span>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {c.needsOffers.offers.slice(0, 4).map((o) => (
+                <span key={o} className="rounded-full bg-stone-100 px-2.5 py-1 text-xs text-stone-700">
+                  {o}
+                </span>
+              ))}
+            </div>
+          </>
+        )}
 
         <div className="mt-4 rounded-2xl bg-stone-50 p-4">
           <button
             onClick={() => setFlipped((v) => !v)}
             className="flex w-full items-center justify-between text-left"
           >
-            <span className="text-sm font-semibold text-stone-900">Why this match?</span>
+            <span className="text-sm font-semibold text-stone-900">{isDating ? 'Why you two?' : 'Why this match?'}</span>
             <Info className="w-4 h-4 text-stone-400" />
           </button>
           <div className="mt-2 flex gap-4 text-xs text-stone-600">
@@ -464,7 +505,7 @@ function SwipeCard({
           onClick={onOpen}
           className="mt-4 w-full rounded-full border border-stone-300 py-2.5 text-sm font-medium text-stone-800 hover:bg-stone-50"
         >
-          Open full synergy breakdown
+          {isDating ? 'Open full profile' : 'Open full synergy breakdown'}
         </button>
       </div>
     </motion.article>
