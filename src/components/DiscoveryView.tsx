@@ -362,7 +362,7 @@ function SwipeCard({
         PASS
       </motion.div>
 
-      <div className="relative aspect-[4/5] max-h-[58%] w-full bg-stone-100">
+      <div className="relative w-full shrink-0 aspect-[4/5] max-h-[58%] bg-stone-100">
         <img
           src={c.avatar}
           alt={c.name}
