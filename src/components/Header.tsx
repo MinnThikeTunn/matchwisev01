@@ -96,7 +96,19 @@ export const Header: React.FC<HeaderProps> = ({
       id: 'discovery' as ViewMode,
       label: 'Discovery',
       icon: Sparkles,
-      description: 'Card-by-card connect / pass with explainable evidence'
+      description: 'Private interest signals — never a match on their own'
+    },
+    {
+      id: 'introductions' as ViewMode,
+      label: 'Introductions',
+      icon: Sparkles,
+      description: 'A small shortlist with readable reasons, decided by both people'
+    },
+    {
+      id: 'chats' as ViewMode,
+      label: 'Conversations',
+      icon: Sparkles,
+      description: 'Opens only after two deliberate yeses'
     },
     {
       id: 'maps' as ViewMode,
