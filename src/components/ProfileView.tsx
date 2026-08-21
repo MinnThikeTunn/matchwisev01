@@ -398,17 +398,18 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </button>
 
         <button
-          onClick={() => setActiveTab('verification')}
+          onClick={() => setActiveTab('prism-id')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-            activeTab === 'verification'
+            activeTab === 'prism-id'
               ? 'bg-stone-900 text-white shadow-xs'
               : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
           }`}
-          id="profile-tab-verification"
+          id="profile-tab-prism-id"
         >
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Verification & Cryptography</span>
+          <span>Prism ID & Trust</span>
         </button>
+
       </div>
 
       {/* Tab Content 1: Overview */}
