@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { UserProfile, OCEANProfile, EngineTier, IntentSubMode } from '../types';
 import { getColorIdentity } from '../lib/colorSystem';
 import { ProfileSummaryCard } from './ProfileSummaryCard';
+import { ConicRingVisual } from './ConicRingVisual';
+import { useAnswers, preferenceStats } from '../lib/preferences';
+import { useStage } from './stage/useStage';
+
 import { 
   User, 
   ShieldCheck, 
