@@ -357,6 +357,50 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </div>
       </div>
 
+      {/* Trust strip — the Prism ID at a glance */}
+      <div className="mb-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <button
+          onClick={() => setActiveTab('prism-id')}
+          className="text-left p-4 rounded-2xl bg-white border border-stone-200 shadow-xs hover:border-[#D97706]/50 transition-all"
+          id="profile-trust-prism-id"
+        >
+          <span className="flex items-center gap-1.5 text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+            <Hash className="w-3 h-3 text-[#D97706]" /> Prism ID
+          </span>
+          <span className="block mt-1 font-mono text-sm font-bold text-stone-900 truncate">
+            {activeProfile.prismId || 'MW-9842-AX'}
+          </span>
+        </button>
+
+        <div className="p-4 rounded-2xl bg-white border border-stone-200 shadow-xs">
+          <span className="flex items-center gap-1.5 text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+            <ShieldCheck className="w-3 h-3 text-emerald-600" /> Verified
+          </span>
+          <span className="block mt-1 text-sm font-bold text-emerald-700">
+            {new Date(activeProfile.verifiedAt).toLocaleDateString()}
+          </span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white border border-stone-200 shadow-xs">
+          <span className="flex items-center gap-1.5 text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+            <Sliders className="w-3 h-3 text-[#0A6275]" /> Completeness
+          </span>
+          <span className="block mt-1 text-sm font-bold text-stone-900">
+            {isSelf ? `${stats.completeness}%` : 'Private'}
+          </span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white border border-stone-200 shadow-xs">
+          <span className="flex items-center gap-1.5 text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+            <Zap className="w-3 h-3 text-[#D97706]" /> Activity
+          </span>
+          <span className="block mt-1 text-sm font-bold text-stone-900">
+            {isSelf ? `${signalCount} signals · ${matchCount} mutual` : 'Active recently'}
+          </span>
+        </div>
+      </div>
+
+
       {/* Detailed profile summary (swapped in from the home dashboard) */}
       <ProfileSummaryCard
         profile={activeProfile}
