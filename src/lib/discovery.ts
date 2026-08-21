@@ -1,6 +1,7 @@
 import { UserProfile, IntentSubMode } from '../types';
 import { DATING_META } from '../data/datingProfiles';
 import { evaluatePairwiseMatch } from './algorithm';
+import { datingIdentity, GENDER_LABEL, preferencesStore, type DatingIdentity } from './preferences';
 
 export const MATCH_VERSION = 'MATCHWISE_MATCH_V1_0';
 
@@ -177,6 +178,7 @@ function datingEvidence(
   const shared = sharedInterests(requester, candidate);
   const meta = DATING_META[candidate.id];
 
+  if (meta?.orientation) reasons.push(`${GENDER_LABEL[meta.gender]}, ${meta.orientation.toLowerCase()}.`);
   if (meta?.lookingFor) reasons.push(`Looking for: ${meta.lookingFor.toLowerCase()}.`);
   if (shared.length) reasons.push(`You share ${shared.slice(0, 2).join(' and ')}.`);
   if (meta?.interests?.length) reasons.push(`Spends free time on ${meta.interests.slice(0, 3).join(', ').toLowerCase()}.`);
@@ -245,12 +247,29 @@ function evidence(
  * Candidate pool -> remove self -> remove seen/blocked -> hard boundaries ->
  * context scoring -> behaviour adjustment -> confidence -> explanation -> rank.
  */
+/**
+ * Mutual orientation gate. Both sides must want to meet the other's gender.
+ * Unanswered viewer preferences mean no filtering (we never guess).
+ */
+export function orientationCompatible(
+  viewer: DatingIdentity,
+  candidateId: string,
+): boolean {
+  const meta = DATING_META[candidateId];
+  if (!meta) return true;
+  if (viewer.interestedIn.length && !viewer.interestedIn.includes(meta.gender)) return false;
+  if (viewer.gender && !meta.interestedIn.includes(viewer.gender)) return false;
+  return true;
+}
+
 export function rankDiscovery(
   requester: UserProfile,
   pool: UserProfile[],
   context: DiscoveryContext,
   swipes: SwipeRecord[],
+  viewerIdentity?: DatingIdentity,
 ): RankedCandidate[] {
+  const viewer = viewerIdentity ?? datingIdentity(preferencesStore.getSnapshot());
   const seen = new Set(swipes.filter((s) => s.context === context).map((s) => s.candidateId));
   const signal = learnSignal(swipes, context);
   const subMode = DISCOVERY_CONTEXTS.find((c) => c.id === context)!.subMode;
@@ -258,6 +277,7 @@ export function rankDiscovery(
   const ranked = pool
     .filter((c) => c.id !== requester.id && !seen.has(c.id))
     .filter((c) => (context === 'DATING' ? c.subMode === 'DATING' : c.subMode !== 'DATING'))
+    .filter((c) => context !== 'DATING' || orientationCompatible(viewer, c.id))
     .map<RankedCandidate>((candidate) => {
       const result = evaluatePairwiseMatch(requester, candidate, subMode);
       const tags = candidateTags(candidate);
