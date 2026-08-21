@@ -1,8 +1,4 @@
-# Prism Refine
-
-We will improve the website @project:11725400-5fff-4b88-bc95-eb66b204b7f0:"Prism Match" We will use its whole code as the base but we will align that with specs from the markdown file attached by adding and refining some of the @project:11725400-5fff-4b88-bc95-eb66b204b7f0:"Prism Match" codes and UI/UX. Let's build it.
-
-This project was built with [Lovable](https://lovable.dev).
+# Matchwise Prism
 
 **Live app**: https://matchwisev01.lovable.app
 
