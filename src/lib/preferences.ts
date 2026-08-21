@@ -76,6 +76,18 @@ export const QUESTION_SETS: QuestionSet[] = [
         kind: 'single',
         options: ['Same neighbourhood', 'Up to 25 km', 'Same country', 'Distance is fine'],
       },
+      {
+        id: 'i5',
+        prompt: 'Your gender',
+        kind: 'single',
+        options: ['Woman', 'Man', 'Non-binary'],
+      },
+      {
+        id: 'i6',
+        prompt: 'Who would you like to be introduced to?',
+        kind: 'multi',
+        options: ['Women', 'Men', 'Non-binary people'],
+      },
     ],
   },
   {
