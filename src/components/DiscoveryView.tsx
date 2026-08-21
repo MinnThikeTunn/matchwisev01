@@ -30,6 +30,7 @@ import {
   topLearnedTags,
 } from '../lib/discovery';
 import { DATING_META } from '../data/datingProfiles';
+import { datingIdentity, GENDER_LABEL, useAnswers } from '../lib/preferences';
 import { recordSignal, reachStep, undoLastSignal } from '../lib/twoStage';
 import { useStage } from './stage/useStage';
 
@@ -52,9 +53,12 @@ export function DiscoveryView({
   const [swipes, setSwipes] = useState<SwipeRecord[]>(() => loadSwipes());
   const [showDebug, setShowDebug] = useState(false);
 
+  const answers = useAnswers();
+  const identity = useMemo(() => datingIdentity(answers), [answers]);
+
   const queue = useMemo(
-    () => rankDiscovery(currentUser, candidatePool, context, swipes),
-    [currentUser, candidatePool, context, swipes],
+    () => rankDiscovery(currentUser, candidatePool, context, swipes, identity),
+    [currentUser, candidatePool, context, swipes, identity],
   );
 
   const signal = useMemo(() => learnSignal(swipes, context), [swipes, context]);
@@ -400,6 +404,11 @@ function SwipeCard({
           <>
             <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500">
               {meta?.age && <span className="font-semibold text-stone-700">{meta.age}</span>}
+              {meta && (
+                <span className="rounded-full bg-stone-100 px-2.5 py-1 text-xs text-stone-700">
+                  {GENDER_LABEL[meta.gender]} · {meta.orientation}
+                </span>
+              )}
               <span className="inline-flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" />
                 {meta ? `${meta.distanceKm} km away` : c.location}
