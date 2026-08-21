@@ -247,6 +247,20 @@ export function DiscoveryView({
                 {learnedTags.length ? learnedTags.join(', ') : 'Not enough swipes yet'}
               </p>
             </div>
+            {context === 'DATING' && (
+              <div className="mt-3">
+                <p className="text-[11px] font-mono uppercase tracking-[0.16em] text-stone-400">
+                  Showing you
+                </p>
+                <p className="mt-1 text-sm text-stone-700">
+                  {identity.interestedIn.length
+                    ? `${identity.interestedIn.map((g) => GENDER_LABEL[g].toLowerCase()).join(', ')}${
+                        identity.gender ? ` who are open to meeting a ${GENDER_LABEL[identity.gender].toLowerCase()}` : ''
+                      }`
+                    : 'Everyone — set your gender and who you want to meet in Preferences → Relationship intent.'}
+                </p>
+              </div>
+            )}
             {swipes.length > 0 && (
               <button onClick={reset} className="mt-4 text-xs text-stone-500 underline">
                 Reset all signals
