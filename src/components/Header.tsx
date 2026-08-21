@@ -109,12 +109,6 @@ export const Header: React.FC<HeaderProps> = ({
       description: 'Cartography & multi-tier resonance exploration'
     },
     {
-      id: 'verification' as ViewMode,
-      label: 'Verification',
-      icon: ShieldCheck,
-      description: 'Private, verifiable proof of who you are'
-    },
-    {
       id: 'preferences' as ViewMode,
       label: 'Preferences',
       icon: SlidersHorizontal,
@@ -122,9 +116,9 @@ export const Header: React.FC<HeaderProps> = ({
     },
     {
       id: 'profile' as ViewMode,
-      label: 'Profile',
-      icon: User,
-      description: 'Big Five psychometrics & vector parameters'
+      label: 'Prism ID',
+      icon: ShieldCheck,
+      description: 'Your universal identity record, traits and verified proof'
     }
   ];
 

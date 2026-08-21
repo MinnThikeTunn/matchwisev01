@@ -1,6 +1,6 @@
 export type EngineTier = 'PERSONAL' | 'PROFESSIONAL' | 'COLLABORATIVE';
 
-export type ViewMode = 'dashboard' | 'discovery' | 'introductions' | 'chats' | 'maps' | 'verification' | 'synergy' | 'profile' | 'preferences';
+export type ViewMode = 'dashboard' | 'discovery' | 'introductions' | 'chats' | 'maps' | 'synergy' | 'profile' | 'preferences';
 
 export type IntentSubMode = 
   | 'DATING' 
