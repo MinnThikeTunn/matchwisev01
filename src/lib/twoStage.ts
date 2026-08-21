@@ -8,6 +8,7 @@
  */
 import { UserProfile } from '../types';
 import { evaluatePairwiseMatch } from './algorithm';
+import { applyDemoAnswers } from './preferences';
 
 export type SignalAction = 'curious' | 'pass';
 export type Decision = 'accepted' | 'declined';
