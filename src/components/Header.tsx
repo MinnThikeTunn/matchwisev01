@@ -109,12 +109,6 @@ export const Header: React.FC<HeaderProps> = ({
       description: 'Cartography & multi-tier resonance exploration'
     },
     {
-      id: 'verification' as ViewMode,
-      label: 'Verification',
-      icon: ShieldCheck,
-      description: 'Private, verifiable proof of who you are'
-    },
-    {
       id: 'preferences' as ViewMode,
       label: 'Preferences',
       icon: SlidersHorizontal,
@@ -122,9 +116,9 @@ export const Header: React.FC<HeaderProps> = ({
     },
     {
       id: 'profile' as ViewMode,
-      label: 'Profile',
-      icon: User,
-      description: 'Big Five psychometrics & vector parameters'
+      label: 'Prism ID',
+      icon: ShieldCheck,
+      description: 'Your universal identity record, traits and verified proof'
     }
   ];
 
@@ -239,8 +233,8 @@ export const Header: React.FC<HeaderProps> = ({
                 currentView === 'profile' ? 'opacity-100' : ''
               }`}
               id="header-profile-avatar-btn"
-              title="View Dedicated Profile"
-              aria-label="View Profile"
+              title="View your Prism ID"
+              aria-label="View your Prism ID"
             >
               <div
                 className={`w-8 h-8 rounded-full ring-2 overflow-hidden transition-all ${
@@ -353,7 +347,7 @@ export const Header: React.FC<HeaderProps> = ({
               id="mobile-view-profile-btn"
             >
               <User className="w-3.5 h-3.5 text-stone-600" />
-              <span>View Full Profile</span>
+              <span>View Prism ID</span>
             </button>
           </div>
 

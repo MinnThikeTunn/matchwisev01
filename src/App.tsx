@@ -4,7 +4,6 @@ import { Footer } from './components/Footer';
 import { DashboardView } from './components/DashboardView';
 import { MapsView } from './components/MapsView';
 import { DiscoveryView } from './components/DiscoveryView';
-import { VerificationView } from './components/VerificationView';
 import { SynergyMatchView } from './components/SynergyMatchView';
 import { IntroductionsView } from './components/IntroductionsView';
 import { ChatsView } from './components/ChatsView';
@@ -205,10 +204,6 @@ export default function App() {
             currentUser={currentUser}
             onSelectCandidate={handleSelectCandidate}
           />
-        )}
-
-        {currentView === 'verification' && (
-          <VerificationView currentUser={currentUser} />
         )}
 
         {currentView === 'profile' && (

@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { UserProfile, OCEANProfile, EngineTier, IntentSubMode } from '../types';
 import { getColorIdentity } from '../lib/colorSystem';
 import { ProfileSummaryCard } from './ProfileSummaryCard';
+import { ConicRingVisual } from './ConicRingVisual';
+import { useAnswers, preferenceStats } from '../lib/preferences';
+import { useStage } from './stage/useStage';
+
 import { 
   User, 
   ShieldCheck, 
@@ -60,7 +64,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
   const [isEditing, setIsEditing] = useState(false);
   const [showCopyToast, setShowCopyToast] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'spectrum' | 'ocean' | 'skills' | 'verification'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'spectrum' | 'ocean' | 'skills' | 'prism-id'>('overview');
+
+  const answers = useAnswers();
+  const stats = preferenceStats(answers);
+  const stage = useStage();
+  const signalCount = stage.signalOrder.length;
+  const introCount = Object.keys(stage.decisions).length;
+  const matchCount = Object.keys(stage.decisions).filter(
+    (id) => stage.decisions[id] === 'accepted' && stage.theirDecisions[id] === 'accepted',
+  ).length;
+
 
   // Form State for editing
   const [formData, setFormData] = useState({
@@ -200,6 +214,40 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     setIsEditing(false);
   };
 
+  const handleCopyPrismId = () => {
+    navigator.clipboard.writeText(activeProfile.prismId || activeProfile.id);
+    setShowCopyToast(true);
+    setTimeout(() => setShowCopyToast(false), 2500);
+  };
+
+  const trustChecklist: { label: string; detail: string; met: boolean }[] = [
+    {
+      label: 'Identity authenticated',
+      detail: `Signed ${new Date(activeProfile.verifiedAt).toLocaleDateString()}`,
+      met: true,
+    },
+    {
+      label: 'Intent declared',
+      detail: `${activeProfile.subMode.replace(/_/g, ' ').toLowerCase()} · ${activeProfile.tier.toLowerCase()}`,
+      met: Boolean(activeProfile.subMode),
+    },
+    {
+      label: 'Preferences completed',
+      detail: isSelf
+        ? `${stats.answered} of ${stats.total} questions answered`
+        : 'Answered privately',
+      met: isSelf ? stats.completeness >= 60 : true,
+    },
+    {
+      label: 'Activity history',
+      detail: isSelf
+        ? `${signalCount} signals · ${introCount} introductions · ${matchCount} mutual`
+        : 'Active in the last week',
+      met: isSelf ? signalCount > 0 : true,
+    },
+  ];
+
+
   const handleShareDossier = () => {
     navigator.clipboard.writeText(
       `${window.location.origin}/#prism-${activeProfile.prismId || activeProfile.id}`
@@ -309,6 +357,50 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </div>
       </div>
 
+      {/* Trust strip — the Prism ID at a glance */}
+      <div className="mb-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <button
+          onClick={() => setActiveTab('prism-id')}
+          className="text-left p-4 rounded-2xl bg-white border border-stone-200 shadow-xs hover:border-[#D97706]/50 transition-all"
+          id="profile-trust-prism-id"
+        >
+          <span className="flex items-center gap-1.5 text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+            <Hash className="w-3 h-3 text-[#D97706]" /> Prism ID
+          </span>
+          <span className="block mt-1 font-mono text-sm font-bold text-stone-900 truncate">
+            {activeProfile.prismId || 'MW-9842-AX'}
+          </span>
+        </button>
+
+        <div className="p-4 rounded-2xl bg-white border border-stone-200 shadow-xs">
+          <span className="flex items-center gap-1.5 text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+            <ShieldCheck className="w-3 h-3 text-emerald-600" /> Verified
+          </span>
+          <span className="block mt-1 text-sm font-bold text-emerald-700">
+            {new Date(activeProfile.verifiedAt).toLocaleDateString()}
+          </span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white border border-stone-200 shadow-xs">
+          <span className="flex items-center gap-1.5 text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+            <Sliders className="w-3 h-3 text-[#0A6275]" /> Completeness
+          </span>
+          <span className="block mt-1 text-sm font-bold text-stone-900">
+            {isSelf ? `${stats.completeness}%` : 'Private'}
+          </span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white border border-stone-200 shadow-xs">
+          <span className="flex items-center gap-1.5 text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+            <Zap className="w-3 h-3 text-[#D97706]" /> Activity
+          </span>
+          <span className="block mt-1 text-sm font-bold text-stone-900">
+            {isSelf ? `${signalCount} signals · ${matchCount} mutual` : 'Active recently'}
+          </span>
+        </div>
+      </div>
+
+
       {/* Detailed profile summary (swapped in from the home dashboard) */}
       <ProfileSummaryCard
         profile={activeProfile}
@@ -384,17 +476,18 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </button>
 
         <button
-          onClick={() => setActiveTab('verification')}
+          onClick={() => setActiveTab('prism-id')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-            activeTab === 'verification'
+            activeTab === 'prism-id'
               ? 'bg-stone-900 text-white shadow-xs'
               : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
           }`}
-          id="profile-tab-verification"
+          id="profile-tab-prism-id"
         >
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Verification & Cryptography</span>
+          <span>Prism ID & Trust</span>
         </button>
+
       </div>
 
       {/* Tab Content 1: Overview */}
@@ -1022,50 +1115,137 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </div>
       )}
 
-      {/* Tab Content 5: Verification & Cryptographic Stamp */}
-      {activeTab === 'verification' && (
-        <div className="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs animate-in fade-in duration-200 space-y-6">
-          <div className="flex items-center gap-3 pb-4 border-b border-stone-100">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-stone-900">Cryptographic Identity Verification</h2>
-              <p className="text-xs text-stone-500">Immutable audit hash proving your profile calibration authenticity.</p>
+      {/* Tab Content 5: Prism ID — the portable identity record */}
+      {activeTab === 'prism-id' && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Credential card */}
+          <div className="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs">
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex flex-col items-center gap-3 shrink-0">
+                <ConicRingVisual size={180} />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+                  Identity emblem
+                </span>
+              </div>
+
+              <div className="flex-1 space-y-5 min-w-0">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className="text-lg font-bold text-stone-900">Prism ID</h2>
+                    <p className="text-xs text-stone-500 max-w-lg leading-relaxed">
+                      One identity record that travels with {isSelf ? 'you' : activeProfile.name.split(' ')[0]} across
+                      dating, collaboration, study and team contexts — it proves who this person is without exposing
+                      their private answers.
+                    </p>
+                  </div>
+                  <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold shrink-0">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    Verified
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="p-4 rounded-xl bg-stone-50 border border-stone-100 space-y-1">
+                    <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+                      Identifier
+                    </span>
+                    <p className="font-mono font-bold text-stone-800">
+                      {activeProfile.prismId || 'MW-9842-AX'}
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-stone-50 border border-stone-100 space-y-1">
+                    <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+                      Last authenticated
+                    </span>
+                    <p className="font-mono font-bold text-stone-800">
+                      {new Date(activeProfile.verifiedAt).toUTCString()}
+                    </p>
+                  </div>
+                  <div className="sm:col-span-2 p-4 rounded-xl bg-stone-900 text-white font-mono text-[11px] space-y-2">
+                    <div className="flex items-center justify-between text-stone-400 text-[10px]">
+                      <span>INTEGRITY HASH</span>
+                      <span className="text-emerald-400 font-bold">✓ SIGNATURE VALID</span>
+                    </div>
+                    <p className="text-stone-300 break-all leading-relaxed">
+                      e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855{activeProfile.id.replace(/[^a-z0-9]/g, '')}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <button
+                    onClick={handleCopyPrismId}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all"
+                    id="prism-id-copy-btn"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Copy Prism ID</span>
+                  </button>
+                  <button
+                    onClick={handleShareDossier}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white hover:bg-stone-50 text-stone-700 text-xs font-bold rounded-xl border border-stone-200 shadow-xs transition-all"
+                    id="prism-id-share-btn"
+                  >
+                    <Share2 className="w-3.5 h-3.5 text-stone-500" />
+                    <span>Share identity link</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div className="p-4 rounded-xl bg-stone-50 border border-stone-100 space-y-1">
-              <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">
-                Prism Identification Hash
-              </span>
-              <p className="font-mono font-bold text-stone-800 text-xs">
-                {activeProfile.prismId || 'MW-9842-AX'}
-              </p>
-            </div>
-
-            <div className="p-4 rounded-xl bg-stone-50 border border-stone-100 space-y-1">
-              <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">
-                Last Authenticated Timestamp
-              </span>
-              <p className="font-mono font-bold text-stone-800 text-xs">
-                {new Date(activeProfile.verifiedAt).toUTCString()}
-              </p>
-            </div>
-
-            <div className="md:col-span-2 p-4 rounded-xl bg-stone-900 text-white font-mono text-[11px] space-y-2">
-              <div className="flex items-center justify-between text-stone-400 text-[10px]">
-                <span>SHA-256 SPECTRUM INTEGRITY HASH</span>
-                <span className="text-emerald-400 font-bold">✓ SIGNATURE VALID</span>
+          {/* Trust checklist */}
+          <div className="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs">
+            <div className="flex items-center gap-3 pb-4 mb-4 border-b border-stone-100">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                <UserCheck className="w-5 h-5" />
               </div>
-              <p className="text-stone-300 break-all leading-relaxed">
-                e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855{activeProfile.id.replace(/[^a-z0-9]/g, '')}
-              </p>
+              <div>
+                <h2 className="text-base font-bold text-stone-900">What this ID vouches for</h2>
+                <p className="text-xs text-stone-500">Each item is earned in the app — nothing here is decorative.</p>
+              </div>
             </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {trustChecklist.map((item) => (
+                <div
+                  key={item.label}
+                  className={`flex items-start gap-3 p-4 rounded-xl border text-xs ${
+                    item.met
+                      ? 'bg-emerald-50/60 border-emerald-200'
+                      : 'bg-stone-50 border-stone-200'
+                  }`}
+                >
+                  {item.met ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  ) : (
+                    <AlertTriangle className="w-4 h-4 text-stone-400 shrink-0 mt-0.5" />
+                  )}
+                  <div>
+                    <span className={`block font-bold ${item.met ? 'text-emerald-900' : 'text-stone-700'}`}>
+                      {item.label}
+                    </span>
+                    <span className={item.met ? 'text-emerald-800/80' : 'text-stone-500'}>{item.detail}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {isSelf && stats.completeness < 100 && onNavigateToPreferences && (
+              <button
+                onClick={onNavigateToPreferences}
+                className="mt-5 flex items-center gap-1.5 px-4 py-2 bg-[#D97706] hover:bg-[#b45309] text-white text-xs font-bold rounded-xl shadow-xs transition-all"
+                id="prism-id-complete-preferences-btn"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+                <span>Strengthen this ID in Preferences</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
       )}
+
     </div>
   );
 };
