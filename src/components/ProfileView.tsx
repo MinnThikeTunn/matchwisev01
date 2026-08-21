@@ -60,7 +60,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
   const [isEditing, setIsEditing] = useState(false);
   const [showCopyToast, setShowCopyToast] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'spectrum' | 'ocean' | 'skills' | 'verification'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'spectrum' | 'ocean' | 'skills' | 'prism-id'>('overview');
+
+  const answers = useAnswers();
+  const stats = preferenceStats(answers);
+  const stage = useStage();
+  const signalCount = stage.signalOrder.length;
+  const introCount = Object.keys(stage.decisions).length;
+  const matchCount = Object.keys(stage.decisions).filter(
+    (id) => stage.decisions[id] === 'accepted' && stage.theirDecisions[id] === 'accepted',
+  ).length;
+
 
   // Form State for editing
   const [formData, setFormData] = useState({
