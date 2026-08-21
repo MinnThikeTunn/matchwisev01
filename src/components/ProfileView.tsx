@@ -214,6 +214,40 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     setIsEditing(false);
   };
 
+  const handleCopyPrismId = () => {
+    navigator.clipboard.writeText(activeProfile.prismId || activeProfile.id);
+    setShowCopyToast(true);
+    setTimeout(() => setShowCopyToast(false), 2500);
+  };
+
+  const trustChecklist: { label: string; detail: string; met: boolean }[] = [
+    {
+      label: 'Identity authenticated',
+      detail: `Signed ${new Date(activeProfile.verifiedAt).toLocaleDateString()}`,
+      met: true,
+    },
+    {
+      label: 'Intent declared',
+      detail: `${activeProfile.subMode.replace(/_/g, ' ').toLowerCase()} · ${activeProfile.tier.toLowerCase()}`,
+      met: Boolean(activeProfile.subMode),
+    },
+    {
+      label: 'Preferences completed',
+      detail: isSelf
+        ? `${stats.answered} of ${stats.total} questions answered`
+        : 'Answered privately',
+      met: isSelf ? stats.completeness >= 60 : true,
+    },
+    {
+      label: 'Activity history',
+      detail: isSelf
+        ? `${signalCount} signals · ${introCount} introductions · ${matchCount} mutual`
+        : 'Active in the last week',
+      met: isSelf ? signalCount > 0 : true,
+    },
+  ];
+
+
   const handleShareDossier = () => {
     navigator.clipboard.writeText(
       `${window.location.origin}/#prism-${activeProfile.prismId || activeProfile.id}`
