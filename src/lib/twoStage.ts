@@ -115,6 +115,9 @@ export const stageStore = {
 
 export function startDemo() {
   state = { ...initialState, demoMode: true, step: 1 };
+  // The guided demo needs a complete persona behind it, including the gender
+  // and orientation that gate romantic introductions.
+  applyDemoAnswers();
   persist();
   emit();
 }
