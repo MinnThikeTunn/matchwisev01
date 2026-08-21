@@ -8,6 +8,7 @@
  */
 import { UserProfile } from '../types';
 import { evaluatePairwiseMatch } from './algorithm';
+import { applyDemoAnswers } from './preferences';
 
 export type SignalAction = 'curious' | 'pass';
 export type Decision = 'accepted' | 'declined';
@@ -115,6 +116,9 @@ export const stageStore = {
 
 export function startDemo() {
   state = { ...initialState, demoMode: true, step: 1 };
+  // The guided demo needs a complete persona behind it, including the gender
+  // and orientation that gate romantic introductions.
+  applyDemoAnswers();
   persist();
   emit();
 }

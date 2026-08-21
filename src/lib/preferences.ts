@@ -329,3 +329,36 @@ export function datingIdentity(a: Answers): DatingIdentity {
     .filter((x): x is Gender => Boolean(x));
   return { gender: g, interestedIn };
 }
+
+// ---------------------------------------------------------------------------
+// Guided demo — a prefilled persona so the demo has real answers behind it.
+// ---------------------------------------------------------------------------
+
+/** Alex Mercer: a man who wants to be introduced to women. Demo data only. */
+export const DEMO_ANSWERS: Answers = {
+  p1: 4, p2: 4, p3: 3, p4: 5, p5: 4, p6: 4, p7: 2, p8: 4,
+  i1: 'Something serious',
+  i2: 'Within a year',
+  i3: 'Exclusive when it feels right',
+  i4: 'Up to 25 km',
+  i5: 'Man',
+  i6: ['Women'],
+  v1: 4, v2: 2, v3: 4, v4: 4, v5: 5, v6: 4,
+  l1: 'Early bird',
+  l2: 'Balanced',
+  l3: 'Socially',
+  l4: 'Never',
+  l5: 'A few times a week',
+  l6: 'Love them',
+  l7: 'Want kids',
+  c1: 'Same day',
+  c2: 'In person',
+  c3: 'Say it right away',
+  c4: 'After a week or two',
+  n1: ['Food & cooking', 'Travel', 'Music', 'Outdoors', 'Reading'],
+};
+
+/** Loads the demo persona's answers, overwriting whatever is on the device. */
+export function applyDemoAnswers() {
+  commit({ ...DEMO_ANSWERS });
+}
