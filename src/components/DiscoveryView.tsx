@@ -30,6 +30,7 @@ import {
   topLearnedTags,
 } from '../lib/discovery';
 import { DATING_META } from '../data/datingProfiles';
+import { datingIdentity, GENDER_LABEL, useAnswers } from '../lib/preferences';
 import { recordSignal, reachStep, undoLastSignal } from '../lib/twoStage';
 import { useStage } from './stage/useStage';
 
@@ -52,9 +53,12 @@ export function DiscoveryView({
   const [swipes, setSwipes] = useState<SwipeRecord[]>(() => loadSwipes());
   const [showDebug, setShowDebug] = useState(false);
 
+  const answers = useAnswers();
+  const identity = useMemo(() => datingIdentity(answers), [answers]);
+
   const queue = useMemo(
-    () => rankDiscovery(currentUser, candidatePool, context, swipes),
-    [currentUser, candidatePool, context, swipes],
+    () => rankDiscovery(currentUser, candidatePool, context, swipes, identity),
+    [currentUser, candidatePool, context, swipes, identity],
   );
 
   const signal = useMemo(() => learnSignal(swipes, context), [swipes, context]);
@@ -243,6 +247,20 @@ export function DiscoveryView({
                 {learnedTags.length ? learnedTags.join(', ') : 'Not enough swipes yet'}
               </p>
             </div>
+            {context === 'DATING' && (
+              <div className="mt-3">
+                <p className="text-[11px] font-mono uppercase tracking-[0.16em] text-stone-400">
+                  Showing you
+                </p>
+                <p className="mt-1 text-sm text-stone-700">
+                  {identity.interestedIn.length
+                    ? `${identity.interestedIn.map((g) => GENDER_LABEL[g].toLowerCase()).join(', ')}${
+                        identity.gender ? ` who are open to meeting a ${GENDER_LABEL[identity.gender].toLowerCase()}` : ''
+                      }`
+                    : 'Everyone — set your gender and who you want to meet in Preferences → Relationship intent.'}
+                </p>
+              </div>
+            )}
             {swipes.length > 0 && (
               <button onClick={reset} className="mt-4 text-xs text-stone-500 underline">
                 Reset all signals
@@ -400,6 +418,11 @@ function SwipeCard({
           <>
             <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500">
               {meta?.age && <span className="font-semibold text-stone-700">{meta.age}</span>}
+              {meta && (
+                <span className="rounded-full bg-stone-100 px-2.5 py-1 text-xs text-stone-700">
+                  {GENDER_LABEL[meta.gender]} · {meta.orientation}
+                </span>
+              )}
               <span className="inline-flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" />
                 {meta ? `${meta.distanceKm} km away` : c.location}

@@ -1,9 +1,16 @@
 import { UserProfile } from '../types';
+import type { Gender } from '../lib/preferences';
 import { CHROMATIC_SPEC_PRESETS } from './mockData';
 
 /** Extra, dating-only detail we show on romantic Discovery cards. */
 export interface DatingMeta {
   age: number;
+  /** How this person identifies. */
+  gender: Gender;
+  /** Genders they want to be introduced to. */
+  interestedIn: Gender[];
+  /** Plain-language label shown on the card. */
+  orientation: string;
   distanceKm: number;
   lookingFor: string;
   interests: string[];
@@ -13,6 +20,9 @@ export interface DatingMeta {
 export const DATING_META: Record<string, DatingMeta> = {
   'user-chloe-lin': {
     age: 29,
+    gender: 'woman',
+    interestedIn: ['woman', 'nonbinary'],
+    orientation: 'Queer',
     distanceKm: 6,
     lookingFor: 'Something serious, unhurried',
     interests: ['Bookshops', 'Film photography', 'Slow mornings', 'Live jazz', 'Hiking'],
@@ -20,6 +30,9 @@ export const DATING_META: Record<string, DatingMeta> = {
   },
   'user-nadia-rahman': {
     age: 27,
+    gender: 'woman',
+    interestedIn: ['man'],
+    orientation: 'Straight',
     distanceKm: 3,
     lookingFor: 'A relationship, open to seeing where it goes',
     interests: ['Cooking', 'Tennis', 'Travel', 'Podcasts', 'Street food'],
@@ -27,6 +40,9 @@ export const DATING_META: Record<string, DatingMeta> = {
   },
   'user-daniel-okafor': {
     age: 31,
+    gender: 'man',
+    interestedIn: ['woman'],
+    orientation: 'Straight',
     distanceKm: 11,
     lookingFor: 'Long-term partnership',
     interests: ['Running', 'Cooking', 'Vinyl', 'Football', 'Museums'],
@@ -34,6 +50,9 @@ export const DATING_META: Record<string, DatingMeta> = {
   },
   'user-hana-ito': {
     age: 28,
+    gender: 'woman',
+    interestedIn: ['woman', 'man'],
+    orientation: 'Bisexual',
     distanceKm: 8,
     lookingFor: 'Dating with intention',
     interests: ['Ceramics', 'Cycling', 'Cinema', 'Coffee', 'Gardening'],
@@ -41,6 +60,9 @@ export const DATING_META: Record<string, DatingMeta> = {
   },
   'user-elena-vargas': {
     age: 33,
+    gender: 'woman',
+    interestedIn: ['man'],
+    orientation: 'Straight',
     distanceKm: 15,
     lookingFor: 'Serious, kids someday',
     interests: ['Dancing', 'Wine', 'Sailing', 'Design', 'Dogs'],
@@ -48,6 +70,9 @@ export const DATING_META: Record<string, DatingMeta> = {
   },
   'user-james-whitfield': {
     age: 30,
+    gender: 'man',
+    interestedIn: ['woman'],
+    orientation: 'Straight',
     distanceKm: 4,
     lookingFor: 'A real relationship, not a rotation',
     interests: ['Climbing', 'Board games', 'Baking', 'Live music', 'Camping'],
@@ -55,6 +80,9 @@ export const DATING_META: Record<string, DatingMeta> = {
   },
   'user-priya-menon': {
     age: 26,
+    gender: 'woman',
+    interestedIn: ['woman', 'man'],
+    orientation: 'Bisexual',
     distanceKm: 9,
     lookingFor: 'Open to serious, taking it slowly',
     interests: ['Yoga', 'Painting', 'Sci-fi', 'Markets', 'Swimming'],
