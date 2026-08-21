@@ -290,3 +290,42 @@ export function topWeights(a: Answers): string[] {
     .slice(0, 2)
     .map((x) => x.label);
 }
+
+// ---------------------------------------------------------------------------
+// Gender & orientation — used as a hard filter for romantic introductions.
+// ---------------------------------------------------------------------------
+
+export type Gender = 'woman' | 'man' | 'nonbinary';
+
+const GENDER_FROM_ANSWER: Record<string, Gender> = {
+  Woman: 'woman',
+  Man: 'man',
+  'Non-binary': 'nonbinary',
+};
+
+const INTEREST_FROM_ANSWER: Record<string, Gender> = {
+  Women: 'woman',
+  Men: 'man',
+  'Non-binary people': 'nonbinary',
+};
+
+export const GENDER_LABEL: Record<Gender, string> = {
+  woman: 'Woman',
+  man: 'Man',
+  nonbinary: 'Non-binary',
+};
+
+export interface DatingIdentity {
+  gender?: Gender;
+  interestedIn: Gender[];
+}
+
+/** The viewer's own gender and who they want to meet, from the intent set. */
+export function datingIdentity(a: Answers): DatingIdentity {
+  const g = typeof a['i5'] === 'string' ? GENDER_FROM_ANSWER[a['i5'] as string] : undefined;
+  const raw = Array.isArray(a['i6']) ? (a['i6'] as string[]) : [];
+  const interestedIn = raw
+    .map((o) => INTEREST_FROM_ANSWER[o])
+    .filter((x): x is Gender => Boolean(x));
+  return { gender: g, interestedIn };
+}
